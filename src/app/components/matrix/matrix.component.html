@@ -1,0 +1,10 @@
+<table *ngIf="teams.length">
+  <tr>
+    <th></th>
+    <th *ngFor="let team of teams">{{ team }}</th>
+  </tr>
+  <tr *ngFor="let row of matrix; let i = index">
+    <th>{{ teams[i] }}</th>
+    <td *ngFor="let cell of row">{{ cell }}</td>
+  </tr>
+</table>

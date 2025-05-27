@@ -1,0 +1,10 @@
+<div>
+  <input [(ngModel)]="teamName" placeholder="Enter team name" />
+  <button (click)="addTeam()">Add Team</button>
+</div>
+<ul>
+  <li *ngFor="let team of teams; let i = index">
+    {{ team }}
+    <button (click)="removeTeam(i)">Remove</button>
+  </li>
+</ul>
