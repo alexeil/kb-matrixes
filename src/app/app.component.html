@@ -1,37 +1,54 @@
 <h1>Kin-ball Matrix Generator</h1>
 <br />
 
-<label for="lang">Language:</label>
-<select id="lang" [(ngModel)]="lang">
-  <option value="en">English</option>
-  <option value="cz">Česky</option>
-</select>
+<h2>Tournament details</h2>
+<div>
+  <label for="lang">Language:</label>
+  <select id="lang" [(ngModel)]="lang">
+    <option value="en">English</option>
+    <option value="cz">Česky</option>
+  </select>
+  <br /> <br />
+
+  <label>Category Name:
+    <input type="text" [(ngModel)]="categoryName" placeholder="Enter category" />
+  </label>
+  <br /> <br />
+
+  <label>Start Time:
+    <input type="time" [(ngModel)]="scheduleStart" />
+  </label>
+  <br /> <br />
+
+  <label>Duration between games (minutes):
+    <input type="number" [(ngModel)]="scheduleInterval" min="1" />
+  </label>
+</div>
 
 <br /><br /><br />
+<app-team-input (teamsChange)="onTeamsChange($event)"></app-team-input>
 
-<app-team-input (teamsChange)="teams = $event"></app-team-input>
-
-<br />
-<app-matrix
-  [teams]="teams"
-  (displayMatrixChange)="onDisplayMatrixChange($event)">
+<app-matrix [teams]="teams" (displayMatrixChange)="onDisplayMatrixChange($event)">
 </app-matrix>
 
+<div *ngIf="!displayMatrix || !displayMatrix.length" style="color: red;">
+  Matrix unavailable for {{ this.teams.length }} teams to generate the matrix.
+</div>
 
-<app-ranking
-  [lang]="lang"
-  [teams]="teams">
-</app-ranking>
+<div *ngIf="displayMatrix && displayMatrix.length">
 
-<br /><br /><br />
 
-<app-game-sheet
-  [matchMatrix]="displayMatrix"
-  [teams]="teams">
-</app-game-sheet>
+  <app-ranking [lang]="lang" [teams]="teams">
+  </app-ranking>
 
-<br /><br /><br />
+  <br />
 
-<app-schedule
-  [matchMatrix]="displayMatrix">
-</app-schedule>
+  <app-game-sheet [matchMatrix]="displayMatrix" [teams]="teams">
+  </app-game-sheet>
+
+  <br />
+
+  <app-schedule [matchMatrix]="displayMatrix" [categoryName]="categoryName" [scheduleStart]="scheduleStart"
+    [scheduleInterval]="scheduleInterval">
+  </app-schedule>
+</div>

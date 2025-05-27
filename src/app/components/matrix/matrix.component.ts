@@ -1,41 +1,46 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { MATCH_MATRICES } from '../../utils/matrixes.data';
 
 @Component({
   selector: 'app-matrix',
   templateUrl: './matrix.component.html',
   styleUrls: ['./matrix.component.sass']
 })
+
 export class MatrixComponent implements OnChanges {
   @Input() teams: string[] = ['Pardubice', 'Hradec Králové', 'Brno', 'Praha', 'Plzeň'];
   @Output() displayMatrixChange = new EventEmitter<(string | number)[][]>();
   displayMatrix: (string | number)[][] = [];
 
-  // Hardcoded matrix as per your example (team numbers, 1-based)
-  public readonly matchMatrix = [
-    [1, 2, 3],
-    [1, 4, 5],
-    [4, 2, 3],
-    [1, 2, 5],
-    [4, 5, 3]
-  ];
-
-  ngOnChanges() {
-    console.log("before change" + this.displayMatrix);
-    this.generateDisplayMatrix();
-    this.displayMatrixChange.emit(this.displayMatrix);
-    console.log("After change" + this.displayMatrix);
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('MatrixComponent changes:', changes);
+    if (changes['teams']) {
+      console.log('Teams changed in MatrixComponent:', this.teams);
+      // Add your matrix generation logic here
+      this.generateDisplayMatrix();
+      this.displayMatrixChange.emit(this.displayMatrix);
+    }
   }
 
   generateDisplayMatrix() {
-    // Only generate if we have exactly 5 teams
-    if (this.teams.length !== 5) {
+    console.log("generateDisplayMatrix teams:" + this.teams);
+
+    const matrix = MATCH_MATRICES[this.teams.length];
+    console.log("generateDisplayMatrix  matrix:" + matrix);
+
+    if (!matrix) {
       this.displayMatrix = [];
       return;
     }
 
-    // Map team numbers to names (team numbers are 1-based)
-    this.displayMatrix = this.matchMatrix.map((row, i) => [
-      i + 1, // Match number
+    if (!matrix[1]) {
+      console.error("Mismatch between teams and matrix length");
+      this.displayMatrix = [];
+      return;
+    }
+
+    this.displayMatrix = matrix[1].map((row, i) => [
+      i + 1,
       ...row.map(teamNum => this.teams[teamNum - 1])
     ]);
   }

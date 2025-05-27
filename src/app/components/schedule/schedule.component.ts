@@ -8,10 +8,9 @@ import { Component, Input } from '@angular/core';
 
 export class ScheduleComponent {
   @Input() matchMatrix: (string | number)[][] = []
-
-  categoryName: string = '';
-  scheduleStart: string = '10:00';
-  scheduleInterval: number = 45; // minutes
+  @Input() categoryName: string = '';
+  @Input() scheduleStart: string = '10:00';
+  @Input() scheduleInterval: number = 45; // minutes
 
   get scheduleRows() {
     const rows = [];
