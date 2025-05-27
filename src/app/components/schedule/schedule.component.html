@@ -1,3 +1,4 @@
+
 <h2>Game Schedule</h2>
 
 <br />
@@ -11,7 +12,7 @@
         <th>Referees</th>
     </tr>
     <tr *ngFor="let row of scheduleRows; let i = index">
-        <td>{{ row.time }}</td>
+        <td>{{ getTimeForIndex(i) }}</td>
         <td>{{ categoryName }}</td>
         <td>{{ row.teams[0] }}</td>
         <td>{{ row.teams[1] }}</td>
@@ -19,3 +20,23 @@
         <td></td>
     </tr>
 </table>
+
+<h2>Schedule</h2>
+<div class="schedule-grid" cdkDropList (cdkDropListDropped)="drop($event)">
+  <div class="grid-header">Time</div>
+  <div class="grid-header">Kategorie</div>
+  <div class="grid-header">Blue</div>
+  <div class="grid-header">White</div>
+  <div class="grid-header">Black</div>
+  <div class="grid-header">Referees</div>
+
+  <div class="schedule-row" *ngFor="let row of scheduleRows; let i = index" cdkDrag>
+    <div class="grid-cell time">{{ getTimeForIndex(i) }}</div>
+    <div class="grid-cell category">{{ categoryName }}</div>
+    <div class="grid-cell blue">{{ row.teams[0] }}</div>
+    <div class="grid-cell white">{{ row.teams[1] }}</div>
+    <div class="grid-cell black">{{ row.teams[2] }}</div>
+    <div class="grid-cell referees"></div>
+  </div>
+</div>
+
