@@ -1,4 +1,37 @@
-<h1>Sport Matrix Generator</h1>
+<h1>Kin-ball Matrix Generator</h1>
+<br />
+
+<label for="lang">Language:</label>
+<select id="lang" [(ngModel)]="lang">
+  <option value="en">English</option>
+  <option value="cz">Česky</option>
+</select>
+
+<br /><br /><br />
 
 <app-team-input (teamsChange)="teams = $event"></app-team-input>
-<app-matrix [teams]="teams"></app-matrix>
+
+<br />
+<app-matrix
+  [teams]="teams"
+  (displayMatrixChange)="onDisplayMatrixChange($event)">
+</app-matrix>
+
+
+<app-ranking
+  [lang]="lang"
+  [teams]="teams">
+</app-ranking>
+
+<br /><br /><br />
+
+<app-game-sheet
+  [matchMatrix]="displayMatrix"
+  [teams]="teams">
+</app-game-sheet>
+
+<br /><br /><br />
+
+<app-schedule
+  [matchMatrix]="displayMatrix">
+</app-schedule>

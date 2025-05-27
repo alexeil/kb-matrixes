@@ -1,10 +1,16 @@
-<table *ngIf="teams.length">
+<h2>Matrix options</h2>
+
+<table *ngIf="displayMatrix.length">
   <tr>
-    <th></th>
-    <th *ngFor="let team of teams">{{ team }}</th>
+    <th>Match</th>
+    <th>Blue</th>
+    <th>White</th>
+    <th>Black</th>
   </tr>
-  <tr *ngFor="let row of matrix; let i = index">
-    <th>{{ teams[i] }}</th>
+  <tr *ngFor="let row of displayMatrix">
     <td *ngFor="let cell of row">{{ cell }}</td>
   </tr>
 </table>
+<div *ngIf="teams.length && teams.length !== 5" style="color: red;">
+  Please enter exactly 5 teams to generate the matrix.
+</div>

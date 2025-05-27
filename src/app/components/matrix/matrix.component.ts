@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 
 @Component({
   selector: 'app-matrix',
@@ -6,18 +6,37 @@ import { Component, Input, OnChanges } from '@angular/core';
   styleUrls: ['./matrix.component.sass']
 })
 export class MatrixComponent implements OnChanges {
-  @Input() teams: string[] = [];
-  matrix: number[][] = [];
+  @Input() teams: string[] = ['Pardubice', 'Hradec Králové', 'Brno', 'Praha', 'Plzeň'];
+  @Output() displayMatrixChange = new EventEmitter<(string | number)[][]>();
+  displayMatrix: (string | number)[][] = [];
+
+  // Hardcoded matrix as per your example (team numbers, 1-based)
+  public readonly matchMatrix = [
+    [1, 2, 3],
+    [1, 4, 5],
+    [4, 2, 3],
+    [1, 2, 5],
+    [4, 5, 3]
+  ];
 
   ngOnChanges() {
-    this.generateMatrix();
+    console.log("before change" + this.displayMatrix);
+    this.generateDisplayMatrix();
+    this.displayMatrixChange.emit(this.displayMatrix);
+    console.log("After change" + this.displayMatrix);
   }
 
-  generateMatrix() {
-    const n = this.teams.length;
-    // Example: hardcoded matrix logic (e.g., 1 if i != j, 0 otherwise)
-    this.matrix = Array.from({ length: n }, (_, i) =>
-      Array.from({ length: n }, (_, j) => (i === j ? 0 : 1))
-    );
+  generateDisplayMatrix() {
+    // Only generate if we have exactly 5 teams
+    if (this.teams.length !== 5) {
+      this.displayMatrix = [];
+      return;
+    }
+
+    // Map team numbers to names (team numbers are 1-based)
+    this.displayMatrix = this.matchMatrix.map((row, i) => [
+      i + 1, // Match number
+      ...row.map(teamNum => this.teams[teamNum - 1])
+    ]);
   }
 }

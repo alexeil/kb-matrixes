@@ -11,16 +11,16 @@ export class TeamInputComponent {
 
   @Output() teamsChange = new EventEmitter<string[]>();
 
-  addTeam() {
-    if (this.teamName.trim()) {
-      this.teams.push(this.teamName.trim());
-      this.teamName = '';
-      this.teamsChange.emit(this.teams);
-    }
-  }
-
-  removeTeam(index: number) {
-    this.teams.splice(index, 1);
+addTeam() {
+  if (this.teamName.trim()) {
+    this.teams = [...this.teams, this.teamName.trim()]; // create new array
+    this.teamName = '';
     this.teamsChange.emit(this.teams);
   }
+}
+
+removeTeam(index: number) {
+  this.teams = this.teams.filter((_, i) => i !== index); // create new array
+  this.teamsChange.emit(this.teams);
+}
 }
