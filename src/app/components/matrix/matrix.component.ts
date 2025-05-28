@@ -13,7 +13,7 @@ export class MatrixComponent implements OnInit, OnChanges {
   numberOfFields: number = 1;
   displayMatrix: (string | number)[][] = [];
 
-  constructor(private catState: CategoryStateService) {}
+  constructor(private catState: CategoryStateService) { }
 
   ngOnInit() {
     const cat = this.catState.categories[this.catIndex];
@@ -24,7 +24,7 @@ export class MatrixComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['teams'] && !changes['teams'].firstChange) {
+    if (changes['teams']) {
       this.updateMatrix();
       this.catState.updateCategory(this.catIndex, {
         ...this.catState.categories[this.catIndex],
