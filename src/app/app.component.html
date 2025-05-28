@@ -38,11 +38,7 @@
           <app-matrix [teams]="cat.teams" [catIndex]="i"></app-matrix>
         </div>
 
-          <br /><br /><br />
-
-        <div *ngIf="!cat.displayMatrix || !cat.displayMatrix.length" style="color: red;">
-          Matrix unavailable for {{ cat.teams.length }} teams to generate the matrix.
-        </div>
+        <br /><br />
 
         <app-ranking [lang]="lang" [catIndex]="i"></app-ranking>
 
