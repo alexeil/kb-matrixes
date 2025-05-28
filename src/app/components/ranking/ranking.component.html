@@ -1,35 +1,36 @@
-<div *ngIf="teams.length > 0">
-  <h2>Ranking table</h2>
+<h2>Ranking table</h2>
 
-  <div class="ranking-grid">
-    <div class="grid-header" style="grid-column: 1; grid-row: 1 / span 3;">#</div>
-    <div class="grid-header" style="grid-column: 2; grid-row: 1 / span 3;">{{ tableHeaders.team }}</div>
-    <div class="grid-header" style="grid-column: 3 / span 9; grid-row: 1;">{{ tableHeaders.matches }}</div>
-    <div class="grid-header" style="grid-column: 12; grid-row: 1 / span 3;">{{ tableHeaders.totalMatches }}</div>
-    <div class="grid-header" style="grid-column: 13; grid-row: 1 / span 3;">{{ tableHeaders.rank }}</div>
+<button mat-raised-button color="accent" (click)="printRanking()">Print to PDF</button>
 
+<div class="ranking-grid" #rankingTable *ngIf="teams.length > 0">
+  <div class="grid-header" style="grid-column: 1; grid-row: 1 / span 3;">#</div>
+  <div class="grid-header" style="grid-column: 2; grid-row: 1 / span 3;">{{ tableHeaders.team }}</div>
+  <div class="grid-header" style="grid-column: 3 / span 9; grid-row: 1;">{{ tableHeaders.matches }}</div>
+  <div class="grid-header" style="grid-column: 12; grid-row: 1 / span 3;">{{ tableHeaders.totalMatches }}</div>
+  <div class="grid-header" style="grid-column: 13; grid-row: 1 / span 3;">{{ tableHeaders.rank }}</div>
+
+  <ng-container *ngFor="let match of [1, 2, 3]; let m = index">
+    <div class="grid-header" [style.grid-column]="3 + (m * 3)" [style.grid-row]="2" [style.grid-column-end]="'span 3'">
+      {{ tableHeaders.match }} #{{ match }}
+    </div>
+  </ng-container>
+
+  <ng-container *ngFor="let match of [1, 2, 3]; let m = index">
+    <div class="grid-header" [style.grid-column]="3 + (m * 3)" [style.grid-row]="3">{{ tableHeaders.sets }}</div>
+    <div class="grid-header" [style.grid-column]="4 + (m * 3)" [style.grid-row]="3">{{ tableHeaders.fairplay }}
+    </div>
+    <div class="grid-header" [style.grid-column]="5 + (m * 3)" [style.grid-row]="3">{{ tableHeaders.total }}</div>
+  </ng-container>
+
+  <ng-container *ngFor="let team of teams; let i = index">
+    <div class="grid-cell" [style.grid-column]="1" [style.grid-row]="i + 4">{{ i + 1 }}</div>
+    <div class="grid-cell" [style.grid-column]="2" [style.grid-row]="i + 4">{{ team }}</div>
     <ng-container *ngFor="let match of [1, 2, 3]; let m = index">
-      <div class="grid-header" [style.grid-column]="3 + (m * 3)" [style.grid-row]="2" [style.grid-column-end]="'span 3'">
-        {{ tableHeaders.match }} #{{ match }}
-      </div>
+      <div class="grid-cell" [style.grid-column]="3 + (m * 3)" [style.grid-row]="i + 4"></div>
+      <div class="grid-cell" [style.grid-column]="4 + (m * 3)" [style.grid-row]="i + 4"></div>
+      <div class="grid-cell" [style.grid-column]="5 + (m * 3)" [style.grid-row]="i + 4"></div>
     </ng-container>
-
-    <ng-container *ngFor="let match of [1, 2, 3]; let m = index">
-      <div class="grid-header" [style.grid-column]="3 + (m * 3)" [style.grid-row]="3">{{ tableHeaders.sets }}</div>
-      <div class="grid-header" [style.grid-column]="4 + (m * 3)" [style.grid-row]="3">{{ tableHeaders.fairplay }}</div>
-      <div class="grid-header" [style.grid-column]="5 + (m * 3)" [style.grid-row]="3">{{ tableHeaders.total }}</div>
-    </ng-container>
-
-    <ng-container *ngFor="let team of teams; let i = index">
-      <div class="grid-cell" [style.grid-column]="1" [style.grid-row]="i + 4">{{ i + 1 }}</div>
-      <div class="grid-cell" [style.grid-column]="2" [style.grid-row]="i + 4">{{ team }}</div>
-      <ng-container *ngFor="let match of [1, 2, 3]; let m = index">
-        <div class="grid-cell" [style.grid-column]="3 + (m * 3)" [style.grid-row]="i + 4"></div>
-        <div class="grid-cell" [style.grid-column]="4 + (m * 3)" [style.grid-row]="i + 4"></div>
-        <div class="grid-cell" [style.grid-column]="5 + (m * 3)" [style.grid-row]="i + 4"></div>
-      </ng-container>
-      <div class="grid-cell" [style.grid-column]="12" [style.grid-row]="i + 4"></div>
-      <div class="grid-cell" [style.grid-column]="13" [style.grid-row]="i + 4"></div>
-    </ng-container>
-  </div>
+    <div class="grid-cell" [style.grid-column]="12" [style.grid-row]="i + 4"></div>
+    <div class="grid-cell" [style.grid-column]="13" [style.grid-row]="i + 4"></div>
+  </ng-container>
 </div>
