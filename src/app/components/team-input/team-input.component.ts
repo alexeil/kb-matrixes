@@ -43,12 +43,4 @@ export class TeamInputComponent {
       teams: newTeams
     });
   }
-
-  setTestData() {
-    const newTeams = ['Pardubice', 'Hradec Králové', 'Brno', 'Praha', 'Plzeň'];
-    this.catState.updateCategory(this.catIndex, {
-      ...this.catState.categories[this.catIndex],
-      teams: newTeams
-    });
-  }
 }

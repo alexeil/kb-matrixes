@@ -16,11 +16,6 @@
 
 <span style="display:inline-block; width: 15px;"></span>
 
-<button mat-raised-button color="accent" (click)="setTestData()">
-  Set Test Data
-</button>
-
-
 <mat-list *ngIf="teams.length">
   <mat-list-item *ngFor="let team of teams; let i = index">
     <span mat-line>{{ i+1 }}. {{ team }}</span>

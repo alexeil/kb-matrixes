@@ -13,6 +13,7 @@ export class AppComponent {
   mainTabIndex = 0;
   scheduleStart: string = '10:00';
   scheduleInterval: number = 45; // in minutes
+  numberOfFields: number = 1; // Default number of fields
 
   lang: 'en' | 'cz' = 'en';
   teamLabels = ['M', 'B', 'Č'];
@@ -64,5 +65,24 @@ export class AppComponent {
 
   trackByCategoryId(index: number, cat: Category) {
     return cat.id;
+  }
+
+  setTestData() {
+    const categories: Category[] = [
+      {
+        id: Date.now() + Math.random(),
+        name: 'Category A',
+        teams: ['Pardubice', 'Hradec Králové', 'Brno', 'Praha', 'Plzeň'],
+        displayMatrix: []
+      },
+      {
+        id: Date.now() + Math.random(),
+        name: 'Category B',
+        teams: ['Olomouc', 'Liberec', 'Ostrava', 'Zlín', 'Jihlava', 'Karlovy Vary'],
+        displayMatrix: []
+      }
+    ];
+    this.catState.setCategories(categories);
+    this.selectedCategoryIndex = 0;
   }
 }

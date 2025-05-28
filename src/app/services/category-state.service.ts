@@ -4,14 +4,7 @@ import { Category } from '../models/category';
 
 @Injectable({ providedIn: 'root' })
 export class CategoryStateService {
-  private categoriesSubject = new BehaviorSubject<Category[]>([
-    {
-      id: Date.now() + Math.random(),
-      name: 'Category 1',
-      teams: [],
-      displayMatrix: []
-    }
-  ]);
+  private categoriesSubject = new BehaviorSubject<Category[]>([]);
   categories$ = this.categoriesSubject.asObservable();
 
   get categories(): Category[] {

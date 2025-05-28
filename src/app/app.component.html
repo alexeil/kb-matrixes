@@ -1,20 +1,26 @@
 <h2>Tournament details</h2>
 
-<div>
-  <label>Start Time:
-    <input type="time" [(ngModel)]="scheduleStart" />
-  </label>
+<div style="display: flex; align-items: center; gap: 24px;">
+  <mat-form-field appearance="outline">
+    <mat-label>Start Time</mat-label>
+    <input matInput type="time" [(ngModel)]="scheduleStart" />
+  </mat-form-field>
 
-  <span style="display:inline-block; width: 15px;"></span>
+  <mat-form-field appearance="outline">
+    <mat-label>Duration between games (minutes)</mat-label>
+    <input matInput type="number" [(ngModel)]="scheduleInterval" min="1" />
+  </mat-form-field>
 
-  <label>Duration between games (minutes):
-    <input type="number" [(ngModel)]="scheduleInterval" min="1" />
-  </label>
+  <mat-form-field appearance="outline">
+    <mat-label>Number of fields</mat-label>
+    <input matInput type="number" [(ngModel)]="numberOfFields" min="1" />
+  </mat-form-field>
+
 </div>
 
+<button mat-raised-button color="primary" (click)="addCategory()">Add Category</button>
 
-<button (click)="addCategory()">Add Category</button>
-<br /><br />
+<button mat-raised-button color="accent" (click)="setTestData()">Set Test Data</button>
 
 <mat-tab-group [(selectedIndex)]="mainTabIndex">
   <!-- Teams/Matrix/Game Sheets Tab -->
@@ -25,7 +31,11 @@
           <input [(ngModel)]="cat.name"
             style="width: 100px; border: none; background: transparent; font-weight: bold;" />
         </ng-template>
-        <button (click)="removeCategory(i)" style="float:right; margin-top:8px;">Remove Category</button>
+
+        <button mat-fab extended (click)="removeCategory(i)" style="float:right; margin-top:8px;">
+          <mat-icon>delete</mat-icon>
+          Remove Category
+        </button>
 
         <br /><br /><br />
         <app-team-input [teams]="cat.teams" [catIndex]="i"></app-team-input>
@@ -36,9 +46,9 @@
           Matrix unavailable for {{ cat.teams.length }} teams to generate the matrix.
         </div>
 
-      <app-ranking [lang]="lang" [catIndex]="i"></app-ranking>
+        <app-ranking [lang]="lang" [catIndex]="i"></app-ranking>
 
-       <app-game-sheet [catIndex]="i"></app-game-sheet>
+        <app-game-sheet [catIndex]="i"></app-game-sheet>
 
       </mat-tab>
     </mat-tab-group>
