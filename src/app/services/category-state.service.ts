@@ -29,8 +29,7 @@ export class CategoryStateService {
         name: 'New Category',
         teams: [],
         displayMatrix: [],
-        scheduleStart: '10:00',
-        scheduleInterval: 45
+        numberOfFields: 1
       }
     ];
     this.setCategories(arr);

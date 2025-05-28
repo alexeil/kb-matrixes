@@ -1,6 +1,4 @@
-export type FieldCount = 1 | 2; // Extend as needed
-
-export const MATCH_MATRICES: Record<number, Record<FieldCount, number[][]>> = {
+export const MATCH_MATRICES: Record<number, Record<number, number[][]>> = {
     5: {
         1: [
             // matrix for 5 teams, 1 field
@@ -12,11 +10,11 @@ export const MATCH_MATRICES: Record<number, Record<FieldCount, number[][]>> = {
         ],
         2: [
             // matrix for 5 teams, 2 field
-            [1, 2, 3],
-            [4, 5, 1],
             [2, 3, 4],
             [5, 1, 2],
-            [3, 4, 5]
+            [3, 4, 5],
+            [1, 2, 3],
+            [4, 5, 1]
         ]
     },
     6: {

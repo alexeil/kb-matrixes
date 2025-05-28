@@ -1,3 +1,9 @@
+<mat-form-field appearance="outline">
+  <mat-label>Number of fields</mat-label>
+  <input matInput type="number" [(ngModel)]="numberOfFields" min="1" (ngModelChange)="onNumberOfFieldsChange()" />
+</mat-form-field>
+
+<div *ngIf="!displayMatrix.length">No matrix exists for this number of teams/fields</div>
 <div *ngIf="displayMatrix.length">
   <h2>Matrix options</h2>
 

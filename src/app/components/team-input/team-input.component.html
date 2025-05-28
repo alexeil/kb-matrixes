@@ -10,17 +10,16 @@
   </button>
 </form>
 
-<button mat-raised-button color="accent" (click)="shuffleTeams()" [disabled]="teams.length < 2">
-  Shuffle Teams
-</button>
-
-<span style="display:inline-block; width: 15px;"></span>
-
 <mat-list *ngIf="teams.length">
   <mat-list-item *ngFor="let team of teams; let i = index">
-    <span mat-line>{{ i+1 }}. {{ team }}</span>
+    <span mat-line>{{ i + 1 }}. {{ team }}</span>
     <button mat-icon-button color="warn" (click)="removeTeam(i)" aria-label="Remove team">
       <mat-icon>delete</mat-icon>
     </button>
   </mat-list-item>
 </mat-list>
+
+<button mat-raised-button color="accent" (click)="shuffleTeams()" [disabled]="teams.length < 2">
+  Shuffle Teams
+</button>
+

@@ -1,6 +1,7 @@
 export type Category = {
-    id: number; // Unique identifier for the category
+    id: number;
     name: string;
     teams: string[];
+    numberOfFields: number;
     displayMatrix: (string | number)[][];
 };

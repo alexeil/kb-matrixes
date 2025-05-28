@@ -1,23 +1,31 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { MATCH_MATRICES } from '../../utils/matrixes.data';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CategoryStateService } from '../../services/category-state.service';
+import { MATCH_MATRICES } from '../../utils/matrixes.data';
 
 @Component({
   selector: 'app-matrix',
   templateUrl: './matrix.component.html',
   styleUrls: ['./matrix.component.sass']
 })
-export class MatrixComponent implements OnChanges {
+export class MatrixComponent implements OnInit, OnChanges {
   @Input() teams: string[] = [];
   @Input() catIndex!: number;
+  numberOfFields: number = 1;
   displayMatrix: (string | number)[][] = [];
 
   constructor(private catState: CategoryStateService) {}
 
+  ngOnInit() {
+    const cat = this.catState.categories[this.catIndex];
+    if (cat && cat.numberOfFields) {
+      this.numberOfFields = cat.numberOfFields;
+    }
+    this.updateMatrix();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['teams']) {
-      this.generateDisplayMatrix();
-      // Update the matrix in the service for this category
+    if (changes['teams'] && !changes['teams'].firstChange) {
+      this.updateMatrix();
       this.catState.updateCategory(this.catIndex, {
         ...this.catState.categories[this.catIndex],
         displayMatrix: [...this.displayMatrix]
@@ -25,13 +33,22 @@ export class MatrixComponent implements OnChanges {
     }
   }
 
-  generateDisplayMatrix() {
-    const matrix = MATCH_MATRICES[this.teams.length];
-    if (!matrix || !matrix[1]) {
+  onNumberOfFieldsChange() {
+    this.updateMatrix();
+    this.catState.updateCategory(this.catIndex, {
+      ...this.catState.categories[this.catIndex],
+      numberOfFields: this.numberOfFields,
+      displayMatrix: [...this.displayMatrix]
+    });
+  }
+
+  updateMatrix() {
+    const matrixSet = MATCH_MATRICES[this.teams.length];
+    if (!matrixSet || !matrixSet[this.numberOfFields]) {
       this.displayMatrix = [];
       return;
     }
-    this.displayMatrix = matrix[1].map((row, i) => [
+    this.displayMatrix = matrixSet[this.numberOfFields].map((row, i) => [
       i + 1,
       ...row.map((teamNum: number) => this.teams[teamNum - 1])
     ]);

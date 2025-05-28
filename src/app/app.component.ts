@@ -13,7 +13,6 @@ export class AppComponent {
   mainTabIndex = 0;
   scheduleStart: string = '10:00';
   scheduleInterval: number = 45; // in minutes
-  numberOfFields: number = 1; // Default number of fields
 
   lang: 'en' | 'cz' = 'en';
   teamLabels = ['M', 'B', 'Č'];
@@ -73,12 +72,14 @@ export class AppComponent {
         id: Date.now() + Math.random(),
         name: 'Category A',
         teams: ['Pardubice', 'Hradec Králové', 'Brno', 'Praha', 'Plzeň'],
+        numberOfFields: 1,
         displayMatrix: []
       },
       {
         id: Date.now() + Math.random(),
         name: 'Category B',
         teams: ['Olomouc', 'Liberec', 'Ostrava', 'Zlín', 'Jihlava', 'Karlovy Vary'],
+        numberOfFields: 1,
         displayMatrix: []
       }
     ];
