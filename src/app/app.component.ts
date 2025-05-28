@@ -1,46 +1,68 @@
 import { Component } from '@angular/core';
+import { CategoryStateService } from './services/category-state.service';
+import { Category } from './models/category';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass']
 })
-
 export class AppComponent {
-  teams: string[] = [];
+  categories: Category[] = [];
+  selectedCategoryIndex = 0;
+  mainTabIndex = 0;
+  scheduleStart: string = '10:00';
+  scheduleInterval: number = 45; // in minutes
+
   lang: 'en' | 'cz' = 'en';
   teamLabels = ['M', 'B', 'Č'];
-  displayMatrix: (string | number)[][] = [];
-  categoryName: string = '';
-  scheduleStart: string = '10:00';
-  scheduleInterval: number = 45; // minutes
 
-  //ngOnInit() {
-    // Generate the initial displayMatrix based on default teams
-   // this.onDisplayMatrixChange(this.generateDisplayMatrix());
-  //}
-
-  generateDisplayMatrix(): (string | number)[][] {
-    // Example hardcoded match matrix
-    const matchMatrix = [
-      [1, 2, 3],
-      [1, 4, 5],
-      [4, 2, 3],
-      [1, 2, 5],
-      [4, 5, 3]
-    ];
-    if (this.teams.length !== 5) return [];
-    return matchMatrix.map((row, i) => [
-      i + 1,
-      ...row.map(teamNum => this.teams[teamNum - 1])
-    ]);
+  constructor(public catState: CategoryStateService) {
+    let previousLength = 0;
+    this.catState.categories$.subscribe(cats => {
+      // If a category was added, select the last one
+      if (cats.length > previousLength) {
+        this.selectedCategoryIndex = cats.length - 1;
+      }
+      // Ensure selectedCategoryIndex is valid
+      if (this.selectedCategoryIndex >= cats.length) {
+        this.selectedCategoryIndex = Math.max(0, cats.length - 1);
+      }
+      this.categories = cats;
+      previousLength = cats.length;
+    });
   }
 
-  onDisplayMatrixChange(matrix: (string | number)[][]) {
-    this.displayMatrix = matrix;
+  get selectedCategory() {
+    console.log('Selected category index:', this.selectedCategoryIndex);
+    return this.categories[this.selectedCategoryIndex];
   }
 
-  onTeamsChange(newTeams: string[]) {
-    this.teams = [...newTeams];
+  onTeamsChange(newTeams: string[], catIndex: number) {
+    const cat = this.categories[catIndex];
+    if (JSON.stringify(cat.teams) !== JSON.stringify(newTeams)) {
+      this.catState.updateCategory(catIndex, { ...cat, teams: [...newTeams] });
+    }
+  }
+
+  onDisplayMatrixChange(matrix: (string | number)[][], catIndex: number) {
+    const cat = this.categories[catIndex];
+    if (JSON.stringify(cat.displayMatrix) !== JSON.stringify(matrix)) {
+      this.catState.updateCategory(catIndex, { ...cat, displayMatrix: [...matrix] });
+    }
+  }
+
+  addCategory() {
+    this.catState.addCategory();
+    //this.selectedCategoryIndex = this.categories.length; // Will be corrected by subscription
+  }
+
+  removeCategory(index: number) {
+    this.catState.removeCategory(index);
+    // selectedCategoryIndex will be corrected by subscription
+  }
+
+  trackByCategoryId(index: number, cat: Category) {
+    return cat.id;
   }
 }

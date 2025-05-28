@@ -1,6 +1,8 @@
-<h2>Game sheets</h2>
 
-<div *ngIf="teams.length === 5">
+
+<div *ngIf="matchMatrix.length > 0">
+    <h2>Game sheets</h2>
+
     <ng-container *ngFor="let match of matchMatrix; let idx = index">
         <h3>Zápas #{{ match[0] }}</h3>
         <div class="game-sheet-grid">

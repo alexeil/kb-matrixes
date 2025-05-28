@@ -17,6 +17,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTableModule } from '@angular/material/table';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
     declarations: [
@@ -38,7 +39,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         MatCardModule,
         MatGridListModule,
         MatTableModule,
-        DragDropModule
+        DragDropModule,
+        MatTabsModule
     ],
     providers: [
         provideAnimationsAsync()

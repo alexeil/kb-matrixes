@@ -1,54 +1,52 @@
-<h1>Kin-ball Matrix Generator</h1>
-<br />
-
 <h2>Tournament details</h2>
+
 <div>
-  <label for="lang">Language:</label>
-  <select id="lang" [(ngModel)]="lang">
-    <option value="en">English</option>
-    <option value="cz">Česky</option>
-  </select>
-  <br /> <br />
-
-  <label>Category Name:
-    <input type="text" [(ngModel)]="categoryName" placeholder="Enter category" />
-  </label>
-  <br /> <br />
-
   <label>Start Time:
     <input type="time" [(ngModel)]="scheduleStart" />
   </label>
-  <br /> <br />
+
+  <span style="display:inline-block; width: 15px;"></span>
 
   <label>Duration between games (minutes):
     <input type="number" [(ngModel)]="scheduleInterval" min="1" />
   </label>
 </div>
 
-<br /><br /><br />
-<app-team-input (teamsChange)="onTeamsChange($event)"></app-team-input>
 
-<app-matrix [teams]="teams" (displayMatrixChange)="onDisplayMatrixChange($event)">
-</app-matrix>
+<button (click)="addCategory()">Add Category</button>
+<br /><br />
 
-<div *ngIf="!displayMatrix || !displayMatrix.length" style="color: red;">
-  Matrix unavailable for {{ this.teams.length }} teams to generate the matrix.
-</div>
+<mat-tab-group [(selectedIndex)]="mainTabIndex">
+  <!-- Teams/Matrix/Game Sheets Tab -->
+  <mat-tab label="Teams & Matrix">
+    <mat-tab-group [(selectedIndex)]="selectedCategoryIndex">
+      <mat-tab *ngFor="let cat of categories; let i = index; trackBy: trackByCategoryId">
+        <ng-template mat-tab-label>
+          <input [(ngModel)]="cat.name"
+            style="width: 100px; border: none; background: transparent; font-weight: bold;" />
+        </ng-template>
+        <button (click)="removeCategory(i)" style="float:right; margin-top:8px;">Remove Category</button>
 
-<div *ngIf="displayMatrix && displayMatrix.length">
+        <br /><br /><br />
+        <app-team-input [teams]="cat.teams" [catIndex]="i"></app-team-input>
 
+        <app-matrix [teams]="cat.teams" [catIndex]="i"></app-matrix>
 
-  <app-ranking [lang]="lang" [teams]="teams">
-  </app-ranking>
+        <div *ngIf="!cat.displayMatrix || !cat.displayMatrix.length" style="color: red;">
+          Matrix unavailable for {{ cat.teams.length }} teams to generate the matrix.
+        </div>
 
-  <br />
+      <app-ranking [lang]="lang" [catIndex]="i"></app-ranking>
 
-  <app-game-sheet [matchMatrix]="displayMatrix" [teams]="teams">
-  </app-game-sheet>
+       <app-game-sheet [catIndex]="i"></app-game-sheet>
 
-  <br />
+      </mat-tab>
+    </mat-tab-group>
+  </mat-tab>
 
-  <app-schedule [matchMatrix]="displayMatrix" [categoryName]="categoryName" [scheduleStart]="scheduleStart"
-    [scheduleInterval]="scheduleInterval">
-  </app-schedule>
-</div>
+  <!-- Schedule Tab -->
+  <mat-tab label="Schedule">
+    <app-schedule [categories]="categories" [scheduleStart]="scheduleStart"
+      [scheduleInterval]="scheduleInterval"></app-schedule>
+  </mat-tab>
+</mat-tab-group>

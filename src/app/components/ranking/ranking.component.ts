@@ -1,13 +1,18 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { CategoryStateService } from '../../services/category-state.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-ranking',
   templateUrl: './ranking.component.html',
   styleUrl: './ranking.component.sass'
 })
-export class RankingComponent {
+export class RankingComponent implements OnInit, OnDestroy {
   @Input() lang: string = 'en';
-  @Input() teams: string[] = [];
+  @Input() catIndex!: number;
+
+  teams: string[] = [];
+  private sub!: Subscription;
 
   get tableHeaders() {
     return this.lang === 'cz'
@@ -31,5 +36,18 @@ export class RankingComponent {
         rank: 'Rank',
         match: 'Match'
       };
+  }
+
+  constructor(private catState: CategoryStateService) { }
+
+  ngOnInit() {
+    this.sub = this.catState.categories$.subscribe(categories => {
+      const cat = categories[this.catIndex];
+      this.teams = cat ? cat.teams : [];
+    });
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
   }
 }

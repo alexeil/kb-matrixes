@@ -1,4 +1,3 @@
-
 <h2>Game Schedule</h2>
 
 <br />
@@ -6,14 +5,14 @@
     <tr>
         <th>Time</th>
         <th>Kategorie</th>
-        <th>Blue</th> 
+        <th>Blue</th>
         <th>White</th>
         <th>Black</th>
         <th>Referees</th>
     </tr>
     <tr *ngFor="let row of scheduleRows; let i = index">
-        <td>{{ getTimeForIndex(i) }}</td>
-        <td>{{ categoryName }}</td>
+        <td> {{ getTimeForIndex(i, scheduleStart, scheduleInterval) }}</td>
+        <td>{{ row.categoryName }}</td>
         <td>{{ row.teams[0] }}</td>
         <td>{{ row.teams[1] }}</td>
         <td>{{ row.teams[2] }}</td>
@@ -21,22 +20,24 @@
     </tr>
 </table>
 
-<h2>Schedule</h2>
+<h2>Unified Game Schedule</h2>
 <div class="schedule-grid" cdkDropList (cdkDropListDropped)="drop($event)">
-  <div class="grid-header">Time</div>
-  <div class="grid-header">Kategorie</div>
-  <div class="grid-header">Blue</div>
-  <div class="grid-header">White</div>
-  <div class="grid-header">Black</div>
-  <div class="grid-header">Referees</div>
+    <div class="grid-header">Time</div>
+    <div class="grid-header">Category</div>
+    <div class="grid-header">Blue</div>
+    <div class="grid-header">White</div>
+    <div class="grid-header">Black</div>
+    <div class="grid-header">Referees</div>
 
-  <div class="schedule-row" *ngFor="let row of scheduleRows; let i = index" cdkDrag>
-    <div class="grid-cell time">{{ getTimeForIndex(i) }}</div>
-    <div class="grid-cell category">{{ categoryName }}</div>
-    <div class="grid-cell blue">{{ row.teams[0] }}</div>
-    <div class="grid-cell white">{{ row.teams[1] }}</div>
-    <div class="grid-cell black">{{ row.teams[2] }}</div>
-    <div class="grid-cell referees"></div>
-  </div>
+    <div class="schedule-row" *ngFor="let row of scheduleRows; let i = index" cdkDrag>
+        <div class="grid-cell time">
+            {{ getTimeForIndex(i, scheduleStart, scheduleInterval) }}
+            <!-- You can use a global start/interval or make it per-category if needed -->
+        </div>
+        <div class="grid-cell category">{{ row.categoryName }}</div>
+        <div class="grid-cell blue">{{ row.teams[0] }}</div>
+        <div class="grid-cell white">{{ row.teams[1] }}</div>
+        <div class="grid-cell black">{{ row.teams[2] }}</div>
+        <div class="grid-cell referees"></div>
+    </div>
 </div>
-

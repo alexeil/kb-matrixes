@@ -1,44 +1,54 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CategoryStateService } from '../../services/category-state.service';
 
 @Component({
   selector: 'app-team-input',
   templateUrl: './team-input.component.html',
   styleUrls: ['./team-input.component.sass']
 })
-export class TeamInputComponent implements OnInit {
+export class TeamInputComponent {
   teamName = '';
-  teams: string[] = [];
+  @Input() teams: string[] = [];
+  @Input() catIndex!: number;
 
-  @Output() teamsChange = new EventEmitter<string[]>();
-
-  ngOnInit() {
-    this.teamsChange.emit(this.teams); // Emit default teams on load
-  }
+  constructor(private catState: CategoryStateService) {}
 
   addTeam() {
     if (this.teamName.trim()) {
-      this.teams = [...this.teams, this.teamName.trim()];
+      const newTeams = [...this.teams, this.teamName.trim()];
       this.teamName = '';
-      this.teamsChange.emit(this.teams);
+      this.catState.updateCategory(this.catIndex, {
+        ...this.catState.categories[this.catIndex],
+        teams: newTeams
+      });
     }
   }
 
   removeTeam(index: number) {
-    this.teams = this.teams.filter((_, i) => i !== index);
-    this.teamsChange.emit(this.teams);
+    const newTeams = this.teams.filter((_, i) => i !== index);
+    this.catState.updateCategory(this.catIndex, {
+      ...this.catState.categories[this.catIndex],
+      teams: newTeams
+    });
   }
 
   shuffleTeams() {
-    // Fisher-Yates shuffle algorithm
-    for (let i = this.teams.length - 1; i > 0; i--) {
+    const newTeams = [...this.teams];
+    for (let i = newTeams.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [this.teams[i], this.teams[j]] = [this.teams[j], this.teams[i]];
+      [newTeams[i], newTeams[j]] = [newTeams[j], newTeams[i]];
     }
-    this.teamsChange.emit(this.teams);
+    this.catState.updateCategory(this.catIndex, {
+      ...this.catState.categories[this.catIndex],
+      teams: newTeams
+    });
   }
 
   setTestData() {
-    this.teams = ['Pardubice', 'Hradec Králové', 'Brno', 'Praha', 'Plzeň'];
-    this.teamsChange.emit(this.teams);
+    const newTeams = ['Pardubice', 'Hradec Králové', 'Brno', 'Praha', 'Plzeň'];
+    this.catState.updateCategory(this.catIndex, {
+      ...this.catState.categories[this.catIndex],
+      teams: newTeams
+    });
   }
 }
