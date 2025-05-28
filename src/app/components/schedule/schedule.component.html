@@ -1,43 +1,41 @@
-<h2>Game Schedule</h2>
-
-<br />
-<table border="1" style="border-collapse: collapse;">
-    <tr>
-        <th>Time</th>
-        <th>Kategorie</th>
-        <th>Blue</th>
-        <th>White</th>
-        <th>Black</th>
-        <th>Referees</th>
-    </tr>
-    <tr *ngFor="let row of scheduleRows; let i = index">
-        <td> {{ getTimeForIndex(i, scheduleStart, scheduleInterval) }}</td>
-        <td>{{ row.categoryName }}</td>
-        <td>{{ row.teams[0] }}</td>
-        <td>{{ row.teams[1] }}</td>
-        <td>{{ row.teams[2] }}</td>
-        <td></td>
-    </tr>
-</table>
-
-<h2>Unified Game Schedule</h2>
-<div class="schedule-grid" cdkDropList (cdkDropListDropped)="drop($event)">
-    <div class="grid-header">Time</div>
-    <div class="grid-header">Category</div>
-    <div class="grid-header">Blue</div>
-    <div class="grid-header">White</div>
-    <div class="grid-header">Black</div>
-    <div class="grid-header">Referees</div>
-
-    <div class="schedule-row" *ngFor="let row of scheduleRows; let i = index" cdkDrag>
-        <div class="grid-cell time">
-            {{ getTimeForIndex(i, scheduleStart, scheduleInterval) }}
-            <!-- You can use a global start/interval or make it per-category if needed -->
+<div class="schedule-dnd-container">
+    <!-- Unassigned games list -->
+    <div class="unassigned-games" cdkDropList #unassignedGamesList="cdkDropList" [cdkDropListData]="unassignedGames"
+        [cdkDropListConnectedTo]="slotDropListsArray" (cdkDropListDropped)="dropToUnassigned($event)">
+        <h3>Unassigned Games</h3>
+        <div *ngFor="let game of unassignedGames" cdkDrag>
+            <mat-card style="margin-bottom: 8px;">
+                {{game.categoryName}}: {{game.teams.join(' vs ')}}
+            </mat-card>
         </div>
-        <div class="grid-cell category">{{ row.categoryName }}</div>
-        <div class="grid-cell blue">{{ row.teams[0] }}</div>
-        <div class="grid-cell white">{{ row.teams[1] }}</div>
-        <div class="grid-cell black">{{ row.teams[2] }}</div>
-        <div class="grid-cell referees"></div>
     </div>
+
+    <!-- Schedule table with slots -->
+    <table mat-table [dataSource]="scheduledGames" class="schedule-table">
+        <ng-container matColumnDef="time">
+            <th mat-header-cell *matHeaderCellDef> Time </th>
+            <td mat-cell *matCellDef="let game; let i = index">
+                {{ getTimeForIndex(i) }}
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="game">
+            <th mat-header-cell *matHeaderCellDef> Game </th>
+            <td mat-cell *matCellDef="let game; let i = index">
+                <div cdkDropList #slotDropList="cdkDropList" [cdkDropListData]="[scheduledGames[i]]"
+                    [cdkDropListConnectedTo]="[unassignedGamesList]" [cdkDropListEnterPredicate]="canDropIntoSlot"
+                    (cdkDropListDropped)="dropToSchedule($event, i)" [attr.data-index]="i" style="min-height: 48px;">
+                    <div *ngIf="game" cdkDrag>
+                        <mat-card>
+                            {{game.categoryName}}: {{game.teams.join(' vs ')}}
+                        </mat-card>
+                    </div>
+                    <ng-template [ngIf]="!game">
+                        <span style="color: #aaa;">(empty)</span>
+                    </ng-template>
+                </div>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['time', 'game']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['time', 'game'];"></tr>
+    </table>
 </div>
