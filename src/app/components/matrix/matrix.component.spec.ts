@@ -1,4 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatrixComponent } from './matrix.component';
 
@@ -8,7 +12,8 @@ describe('MatrixComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MatrixComponent]
+      declarations: [MatrixComponent],
+      imports: [MatFormFieldModule, MatInputModule, FormsModule, BrowserAnimationsModule],
     })
     .compileComponents();
     
