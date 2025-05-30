@@ -13,6 +13,7 @@ export class AppComponent {
   mainTabIndex = 0;
   scheduleStart: string = '10:00';
   scheduleInterval: number = 45; // in minutes
+  scheduleFields: number = 1;
 
   lang: 'en' | 'cz' = 'en';
   teamLabels = ['M', 'B', 'Č'];

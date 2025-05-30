@@ -11,6 +11,10 @@
     <input matInput type="number" [(ngModel)]="scheduleInterval" min="1" />
   </mat-form-field>
 
+  <mat-form-field appearance="outline">
+    <mat-label>Number of fields</mat-label>
+    <input matInput type="number" [(ngModel)]="scheduleFields" min="1" />
+  </mat-form-field>
 </div>
 
 <button mat-raised-button color="primary" (click)="addCategory()">Add Category</button>
@@ -51,6 +55,6 @@
   <!-- Schedule Tab -->
   <mat-tab label="Schedule">
     <app-schedule [categories]="categories" [scheduleStart]="scheduleStart"
-      [scheduleInterval]="scheduleInterval"></app-schedule>
+      [scheduleInterval]="scheduleInterval" [fields]="scheduleFields"></app-schedule>
   </mat-tab>
 </mat-tab-group>

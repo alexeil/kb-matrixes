@@ -1,7 +1,7 @@
 <div class="schedule-dnd-container">
     <!-- Unassigned games list -->
     <div class="unassigned-games" cdkDropList #unassignedGamesList="cdkDropList" [cdkDropListData]="unassignedGames"
-        [cdkDropListConnectedTo]="slotDropListsArray" (cdkDropListDropped)="dropToUnassigned($event)">
+        [cdkDropListConnectedTo]="dropListIds" (cdkDropListDropped)="dropToUnassigned($event)">
         <h3>Unassigned Games</h3>
         <div *ngFor="let game of unassignedGames" cdkDrag>
             <mat-card style="margin-bottom: 8px;">
@@ -10,32 +10,32 @@
         </div>
     </div>
 
-    <!-- Schedule table with slots -->
-    <table mat-table [dataSource]="scheduledGames" class="schedule-table">
-        <ng-container matColumnDef="time">
-            <th mat-header-cell *matHeaderCellDef> Time </th>
-            <td mat-cell *matCellDef="let game; let i = index">
-                {{ getTimeForIndex(i) }}
-            </td>
-        </ng-container>
-        <ng-container matColumnDef="game">
-            <th mat-header-cell *matHeaderCellDef> Game </th>
-            <td mat-cell *matCellDef="let game; let i = index">
-                <div cdkDropList #slotDropList="cdkDropList" [cdkDropListData]="[scheduledGames[i]]"
-                    [cdkDropListConnectedTo]="[unassignedGamesList]" [cdkDropListEnterPredicate]="canDropIntoSlot"
-                    (cdkDropListDropped)="dropToSchedule($event, i)" [attr.data-index]="i" style="min-height: 48px;">
-                    <div *ngIf="game" cdkDrag>
-                        <mat-card>
+    <!-- Schedule lists for each field -->
+    <div class="fields-container" style="display: flex; gap: 24px;">
+        <div *ngFor="let games of scheduledGames; let fieldIdx = index" class="scheduled-games-field">
+            <h3>Field {{ fieldIdx + 1 }}</h3>
+            <div cdkDropList [id]="getDropListId(fieldIdx)"
+                [cdkDropListData]="games"
+                [cdkDropListConnectedTo]="dropListIds"
+                (cdkDropListDropped)="dropToSchedule($event, fieldIdx)">
+                <div *ngFor="let game of games; let idx = index" class="schedule-slot">
+                    <div *ngIf="game != null" cdkDrag [cdkDragData]="{ game: game, slot: idx }">
+                        <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
+                            <span style="width: 80px; color: #888;">{{ getTimeForIndex(idx) }}</span>
                             {{game.categoryName}}: {{game.teams.join(' vs ')}}
+                            <button mat-icon-button color="warn" (click)="deassignGame(fieldIdx, idx)" style="margin-left:auto;">
+                                <mat-icon>close</mat-icon>
+                            </button>
                         </mat-card>
                     </div>
-                    <ng-template [ngIf]="!game">
-                        <span style="color: #aaa;">(empty)</span>
-                    </ng-template>
+                    <div *ngIf="game == null">
+                        <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
+                            <span style="width: 80px; color: #888;">{{ getTimeForIndex(idx) }}</span>
+                            <span style="color: #aaa;">(empty)</span>
+                        </mat-card>
+                    </div>
                 </div>
-            </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="['time', 'game']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['time', 'game'];"></tr>
-    </table>
+            </div>
+        </div>
+    </div>
 </div>

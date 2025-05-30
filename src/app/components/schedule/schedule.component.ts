@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
-import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Category } from '../../models/category';
 import { ChangeDetectorRef } from '@angular/core';
 
@@ -19,9 +19,10 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
   @Input() categories: Category[] = [];
   @Input() scheduleStart: string = '10:00';
   @Input() scheduleInterval: number = 45;
+  @Input() fields: number = 1;
 
   unassignedGames: ScheduledGame[] = [];
-  scheduledGames: (ScheduledGame | null)[] = [];
+  scheduledGames: (ScheduledGame | null)[][] = [];
 
   @ViewChildren('slotDropList') slotDropLists!: QueryList<CdkDropList>;
 
@@ -34,10 +35,11 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
 
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['categories']) {
+    if (changes['categories'] || changes['fields']) {
       const allGames = this.flattenGames();
       this.unassignedGames = [...allGames];
-      this.scheduledGames = Array(allGames.length).fill(null);
+      // Create an array for each field
+      this.scheduledGames = Array(this.fields).fill(null).map(() => Array(allGames.length).fill(null));
     }
   }
 
@@ -68,38 +70,89 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
   }
 
-  dropToSchedule(event: CdkDragDrop<(ScheduledGame | null)[]>, slotIndex: number) {
-    if (
-      event.previousContainer !== event.container &&
-      !this.scheduledGames[slotIndex]
-    ) {
-      this.scheduledGames[slotIndex] = event.previousContainer.data[event.previousIndex];
-      this.unassignedGames.splice(event.previousIndex, 1);
+  // Helper to generate drop list ids for each field
+  getDropListId(fieldIdx: number): string {
+    return `scheduledGamesList_${fieldIdx}`;
+  }
 
-      // Force update for Angular
+  get dropListIds(): string[] {
+    // One for each field, plus the unassigned list
+    const ids = [];
+    for (let i = 0; i < this.fields; i++) {
+      ids.push(this.getDropListId(i));
+    }
+    ids.push('unassignedGamesList');
+    return ids;
+  }
+
+  // Helper: get the draggable games and their indices for a field
+  getDraggableGames(fieldIdx: number): { game: ScheduledGame, index: number }[] {
+    return this.scheduledGames[fieldIdx]
+      .map((game, idx) => game ? { game, index: idx } : null)
+      .filter((x): x is { game: ScheduledGame, index: number } => x !== null);
+  }
+
+  // Update dropToSchedule to use slot index
+  dropToSchedule(event: CdkDragDrop<any>, fieldIdx: number) {
+    const currList = this.scheduledGames[fieldIdx];
+    if (event.previousContainer === event.container) {
+      // Reorder within the same field
+      const draggables = this.getDraggableGames(fieldIdx);
+      const prevIdx = draggables[event.previousIndex].index;
+      const currIdx = draggables[event.currentIndex].index;
+      const [moved] = currList.splice(prevIdx, 1, null);
+      currList.splice(currIdx, 0, moved);
+      currList.splice(currIdx + 1, 1); // Remove the null after insert
+    } else {
+      // Assign from unassigned or another field
+      const prevList = event.previousContainer.data;
+      const fromUnassigned = prevList === this.unassignedGames;
+      let game;
+      if (fromUnassigned) {
+        game = this.unassignedGames[event.previousIndex];
+        this.unassignedGames.splice(event.previousIndex, 1);
+      } else {
+        // From another field
+        const fromFieldIdx = this.scheduledGames.findIndex(list => list === prevList);
+        const draggables = this.getDraggableGames(fromFieldIdx);
+        const prevIdx = draggables[event.previousIndex].index;
+        game = prevList[prevIdx];
+        prevList[prevIdx] = null;
+      }
+      // Find the first empty slot in this field
+      const draggables = this.getDraggableGames(fieldIdx);
+      let insertIdx = draggables.length > event.currentIndex ? draggables[event.currentIndex].index : currList.findIndex(g => g == null);
+      if (insertIdx === -1) insertIdx = currList.length - 1;
+      currList[insertIdx] = game;
+    }
+    this.scheduledGames = [...this.scheduledGames];
+    this.unassignedGames = [...this.unassignedGames];
+    this.cdr.detectChanges();
+  }
+
+  // Accept CdkDragDrop<any> for compatibility with Angular CDK event typing
+  dropToUnassigned(event: CdkDragDrop<any>) {
+    const prevList = event.previousContainer.data as (ScheduledGame | null)[];
+    const prevIndex = event.previousIndex;
+    const game = prevList[prevIndex];
+    if (game) {
+      this.unassignedGames.push(game);
+      prevList[prevIndex] = null;
       this.scheduledGames = [...this.scheduledGames];
       this.unassignedGames = [...this.unassignedGames];
       this.cdr.detectChanges();
     }
   }
 
-  dropToUnassigned(event: CdkDragDrop<ScheduledGame[]>) {
-    if (event.previousContainer !== event.container) {
-      const slotDropListElem = event.previousContainer.element?.nativeElement;
-      const slotIndexAttr = slotDropListElem?.getAttribute('data-index');
-      if (slotIndexAttr !== null && slotIndexAttr !== undefined) {
-        const slotIndex = +slotIndexAttr;
-        const game = this.scheduledGames[slotIndex];
-        if (game) {
-          this.unassignedGames.push(game);
-          this.scheduledGames[slotIndex] = null;
-
-          // Force update for Angular
-          this.scheduledGames = [...this.scheduledGames];
-          this.unassignedGames = [...this.unassignedGames];
-          this.cdr.detectChanges();
-        }
-      }
+  // Update deassignGame to use null for empty slots, matching the fix in dropToUnassigned and keeping the schedule structure consistent
+  deassignGame(fieldIdx: number, index: number) {
+    const game = this.scheduledGames[fieldIdx][index];
+    if (game) {
+      this.unassignedGames.push(game);
+      this.scheduledGames[fieldIdx][index] = null;
+      this.scheduledGames = [...this.scheduledGames];
+      this.unassignedGames = [...this.unassignedGames];
+      this.cdr.detectChanges();
     }
   }
 
