@@ -1,37 +1,36 @@
 <div class="schedule-dnd-container">
     <!-- Unassigned games list -->
-    <div class="unassigned-games" cdkDropList #unassignedGamesList="cdkDropList" [cdkDropListData]="unassignedGames"
+    <div class="unassigned-games" cdkDropList [id]="'unassignedGamesList'" #unassignedGamesList="cdkDropList" [cdkDropListData]="unassignedGames"
         [cdkDropListConnectedTo]="dropListIds" (cdkDropListDropped)="dropToUnassigned($event)">
         <h3>Unassigned Games</h3>
         <div *ngFor="let game of unassignedGames" cdkDrag>
-            <mat-card style="margin-bottom: 8px;">
-                {{game.categoryName}}: {{game.teams.join(' vs ')}}
+            <mat-card style="margin-bottom: 8px; width:250px; height: 50px;">
+                {{game?.categoryName}} - {{game?.teams?.join(' VS ')}}
             </mat-card>
         </div>
     </div>
 
     <!-- Schedule lists for each field -->
-    <div class="fields-container" style="display: flex; gap: 24px;">
+    <div class="fields-container" style="display: flex;">
         <div *ngFor="let games of scheduledGames; let fieldIdx = index" class="scheduled-games-field">
             <h3>Field {{ fieldIdx + 1 }}</h3>
-            <div cdkDropList [id]="getDropListId(fieldIdx)"
-                [cdkDropListData]="games"
-                [cdkDropListConnectedTo]="dropListIds"
-                (cdkDropListDropped)="dropToSchedule($event, fieldIdx)">
-                <div *ngFor="let game of games; let idx = index" class="schedule-slot">
+            <div *ngFor="let game of games; let idx = index" class="schedule-slot"
+                 [class.drag-over-slot]="dragOverIndex === idx">
+                <div cdkDropList
+                     [id]="getDropListId(fieldIdx) + '_slot_' + idx"
+                     [cdkDropListData]="games"
+                     [cdkDropListConnectedTo]="dropListIds"
+                     (cdkDropListDropped)="dropToScheduleSlot($event, fieldIdx, idx)">
                     <div *ngIf="game != null" cdkDrag [cdkDragData]="{ game: game, slot: idx }">
                         <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
                             <span style="width: 80px; color: #888;">{{ getTimeForIndex(idx) }}</span>
-                            {{game.categoryName}}: {{game.teams.join(' vs ')}}
-                            <button mat-icon-button color="warn" (click)="deassignGame(fieldIdx, idx)" style="margin-left:auto;">
-                                <mat-icon>close</mat-icon>
-                            </button>
+                            {{game?.categoryName}} - {{game?.teams?.join(' VS ')}}
                         </mat-card>
                     </div>
                     <div *ngIf="game == null">
                         <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
                             <span style="width: 80px; color: #888;">{{ getTimeForIndex(idx) }}</span>
-                            <span style="color: #aaa;">(empty)</span>
+                            <span style="color: #aaa;">(Assign a game to this slot)</span>
                         </mat-card>
                     </div>
                 </div>
