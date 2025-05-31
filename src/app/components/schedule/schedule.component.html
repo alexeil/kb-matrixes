@@ -11,29 +11,30 @@
     </div>
 
     <!-- Schedule lists for each field -->
-    <div class="fields-container" style="display: flex;">
-        <div *ngFor="let games of scheduledGames; let fieldIdx = index" class="scheduled-games-field">
-            <h3>Field {{ fieldIdx + 1 }}</h3>
-            <div cdkDropList
-                 [id]="getDropListId(fieldIdx)"
-                 [cdkDropListData]="scheduledGames[fieldIdx]"
-                 [cdkDropListConnectedTo]="dropListIds"
-                 (cdkDropListDropped)="dropToSchedule($event, fieldIdx)">
-                <div *ngFor="let game of games; let idx = index" class="schedule-slot">
-                    <div *ngIf="game != null" cdkDrag [cdkDragData]="{ game: game, slot: idx }">
-                        <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
-                            <span style="width: 80px; color: #888;">{{ getTimeForIndex(idx) }}</span>
-                            {{game?.categoryName}} - {{game?.teams?.join(' VS ')}}
-                        </mat-card>
-                    </div>
-                    <div *ngIf="game == null">
-                        <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
-                            <span style="width: 80px; color: #888;">{{ getTimeForIndex(idx) }}</span>
-                            <span style="color: #aaa;">(Assign a game to this slot)</span>
-                        </mat-card>
-                    </div>
+   <div class="fields-container" style="display: flex">
+    <div *ngFor="let games of scheduledGames; let fieldIdx = index" class="scheduled-games-field">
+        <h3>Field {{ fieldIdx + 1 }}</h3>
+        <div *ngFor="let game of games; let idx = index" class="schedule-slot">
+            <div
+                cdkDropList
+                [id]="'field-' + fieldIdx + '-slot-' + idx"
+                [cdkDropListData]="{ fieldIdx: fieldIdx, slotIdx: idx }"
+                [cdkDropListConnectedTo]="dropListIds"
+                (cdkDropListDropped)="dropToSchedule($event)">
+                <div *ngIf="game != null" cdkDrag [cdkDragData]="{ game: game, slot: idx, field: fieldIdx }">
+                    <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
+                        <span style="width: 80px; color: #888;">{{ getTimeForIndex(idx) }}</span>
+                        {{game?.categoryName}} - {{game?.teams?.join(' VS ')}}
+                    </mat-card>
+                </div>
+                <div *ngIf="game == null">
+                    <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
+                        <span style="width: 80px; color: #888;">{{ getTimeForIndex(idx) }}</span>
+                        <span style="color: #aaa;">(Assign a game to this slot)</span>
+                    </mat-card>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
