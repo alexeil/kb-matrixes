@@ -99,31 +99,20 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
     const fromFieldIdx = event.previousContainer.data.fieldIdx;
     const fromSlotIdx = event.previousContainer.data.slotIdx;
     const { fieldIdx, slotIdx } = event.container.data;
-    const currentFieldScheduledGames = this.scheduledGames[fieldIdx];
 
-    if (event.previousContainer === event.container) {
-      // Reorder within the same field
-      const draggables = this.getDraggableGames(fieldIdx);
-      const prevIdx = draggables[event.previousIndex].index;
-      const currIdx = draggables[event.currentIndex].index;
-      const [moved] = currentFieldScheduledGames.splice(prevIdx, 1, null);
-      currentFieldScheduledGames.splice(prevIdx, 1);
-      currentFieldScheduledGames.splice(currIdx, 0, moved);
-      currentFieldScheduledGames.length = this.scheduledGames[fieldIdx].length;
-    } else if (event.previousContainer.id === 'unassignedGamesList') {
-      // Assign from unassigned: place in the dropped slot if empty
+    if (event.previousContainer.id === 'unassignedGamesList') {
+      // From unassigned to fields (any field, any slot)
       const game = this.unassignedGames[event.previousIndex];
-      if (currentFieldScheduledGames[slotIdx] == null) {
-        this.unassignedGames.splice(event.previousIndex, 1);
-        currentFieldScheduledGames[slotIdx] = game;
-      }
+      this.unassignedGames.splice(event.previousIndex, 1);
+      this.scheduledGames[fieldIdx].splice(slotIdx, 0, game);
     } else {
-      // Move from another field: place in the dropped slot if empty
+      // From another field or reordering within the same field
       const fromGame = this.scheduledGames[fromFieldIdx][fromSlotIdx];
-      const toGame = this.scheduledGames[fieldIdx][slotIdx];
-      this.scheduledGames[fromFieldIdx][fromSlotIdx] = toGame;
-      this.scheduledGames[fieldIdx][slotIdx] = fromGame;
+      this.scheduledGames[fromFieldIdx].splice(fromSlotIdx, 1);
+      this.scheduledGames[fieldIdx].splice(slotIdx, 0, fromGame);
     }
+
+    // Ensure the scheduled games and unassigned games are updated
     this.scheduledGames = [...this.scheduledGames];
     this.unassignedGames = [...this.unassignedGames];
     this.cdr.detectChanges();
@@ -150,21 +139,34 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
    * Handles dropping a game back to the unassigned list (from a field).
    */
   dropToUnassigned(event: CdkDragDrop<any>) {
-    // Only allow dropping from a field, not reordering unassigned
-    if (event.previousContainer.id !== 'unassignedGamesList') {
-      const prevList = event.previousContainer.data as (ScheduledGame | null)[];
-      const draggables = prevList
-        .map((game, idx) => game ? { game, index: idx } : null)
-        .filter((x): x is { game: ScheduledGame, index: number } => x !== null);
-      const prevIdx = draggables[event.previousIndex].index;
-      const game = prevList[prevIdx];
-      if (game) {
-        this.unassignedGames.push(game);
-        prevList[prevIdx] = null;
-        this.scheduledGames = [...this.scheduledGames];
-        this.unassignedGames = [...this.unassignedGames];
-        this.cdr.detectChanges();
+
+    if (event.previousContainer.id === 'unassignedGamesList') {
+      // Reordering case
+      const previousIndex = event.previousIndex;
+      const currentIndex = event.currentIndex;
+
+      const game = this.unassignedGames[previousIndex];
+      this.unassignedGames.splice(event.previousIndex, 1);
+      this.unassignedGames.splice(currentIndex, 0, game);
+
+      console.log(`Moved game from index ${previousIndex} to ${currentIndex} in unassigned games.`);
+    } else {
+      // From another field to unassigned
+      const fromFieldIdx = event.previousContainer.data.fieldIdx;
+      const fromSlotIdx = event.previousContainer.data.slotIdx;
+      const fromGame = this.scheduledGames[fromFieldIdx][fromSlotIdx];
+
+      if (fromGame) {
+        this.scheduledGames[fromFieldIdx][fromSlotIdx] = null;
+        this.unassignedGames.splice(event.currentIndex, 0, fromGame);
       }
+
+      console.log(`Moved game from field ${fromFieldIdx}, slot ${fromSlotIdx} to unassigned.`);
     }
+
+    // Ensure the scheduled games and unassigned games are updated
+    this.scheduledGames = [...this.scheduledGames];
+    this.unassignedGames = [...this.unassignedGames];
+    this.cdr.detectChanges();
   }
 }
