@@ -14,13 +14,12 @@
     <div class="fields-container" style="display: flex;">
         <div *ngFor="let games of scheduledGames; let fieldIdx = index" class="scheduled-games-field">
             <h3>Field {{ fieldIdx + 1 }}</h3>
-            <div *ngFor="let game of games; let idx = index" class="schedule-slot"
-                 [class.drag-over-slot]="dragOverIndex === idx">
-                <div cdkDropList
-                     [id]="getDropListId(fieldIdx) + '_slot_' + idx"
-                     [cdkDropListData]="games"
-                     [cdkDropListConnectedTo]="dropListIds"
-                     (cdkDropListDropped)="dropToScheduleSlot($event, fieldIdx, idx)">
+            <div cdkDropList
+                 [id]="getDropListId(fieldIdx)"
+                 [cdkDropListData]="scheduledGames[fieldIdx]"
+                 [cdkDropListConnectedTo]="dropListIds"
+                 (cdkDropListDropped)="dropToSchedule($event, fieldIdx)">
+                <div *ngFor="let game of games; let idx = index" class="schedule-slot">
                     <div *ngIf="game != null" cdkDrag [cdkDragData]="{ game: game, slot: idx }">
                         <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
                             <span style="width: 80px; color: #888;">{{ getTimeForIndex(idx) }}</span>

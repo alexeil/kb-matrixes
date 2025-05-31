@@ -2,6 +2,11 @@
 
 <div style="display: flex; align-items: center; gap: 24px;">
   <mat-form-field appearance="outline">
+    <mat-label>Location</mat-label>
+    <input matInput type="text" [(ngModel)]="tournamentLocation" placeholder="Enter city name" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
     <mat-label>Start Time</mat-label>
     <input matInput type="time" [(ngModel)]="scheduleStart" />
   </mat-form-field>

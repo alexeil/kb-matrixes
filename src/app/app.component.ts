@@ -17,6 +17,7 @@ export class AppComponent {
 
   lang: 'en' | 'cz' = 'en';
   teamLabels = ['M', 'B', 'Č'];
+  tournamentLocation: string = '';
 
   constructor(public catState: CategoryStateService) {
     let previousLength = 0;

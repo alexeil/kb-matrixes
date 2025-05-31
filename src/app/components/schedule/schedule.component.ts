@@ -82,13 +82,9 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
   }
 
   get dropListIds(): string[] {
-    // Only include slot-level drop list IDs and the unassigned list
     const ids = [];
-    const numSlots = this.scheduledGames[0]?.length || 0;
     for (let i = 0; i < this.fields; i++) {
-      for (let j = 0; j < numSlots; j++) {
-        ids.push(this.getDropListId(i) + '_slot_' + j);
-      }
+      ids.push(this.getDropListId(i));
     }
     ids.push('unassignedGamesList');
     return ids;
@@ -152,9 +148,12 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
    * Allows dropping directly into any slot, including empty ones.
    */
   dropToScheduleSlot(event: any, fieldIdx: number, slotIdx: number) {
+    console.log('[DND] dropToScheduleSlot called', { event, fieldIdx, slotIdx });
     const currList = this.scheduledGames[fieldIdx];
+    console.log('[DND] previousContainer.id:', event.previousContainer?.id, 'container.id:', event.container?.id);
     // If coming from unassigned
     if (event.previousContainer.id === 'unassignedGamesList') {
+      console.log('[DND] Branch: from unassigned');
       const game = this.unassignedGames[event.previousIndex];
       if (currList[slotIdx] == null) {
         // Normal insert if empty
@@ -171,6 +170,7 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
         }
       }
     } else if (event.previousContainer !== event.container) {
+      console.log('[DND] Branch: from another field/slot');
       // From another field/slot
       const prevList = event.previousContainer.data;
       const fromFieldIdx = this.scheduledGames.findIndex(list => list === prevList);
@@ -191,23 +191,32 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
         }
       }
     } else {
+      console.log('[DND] Branch: reorder within same field');
       // Reorder within the same field
       const draggables = this.getDraggableGames(fieldIdx);
       const prevIdx = draggables[event.previousIndex].index;
       const currIdx = slotIdx;
-      const [moved] = currList.splice(prevIdx, 1, null);
-      if (currList[currIdx] == null) {
-        currList.splice(currIdx, 0, moved);
-        currList.splice(currIdx + 1, 1); // Remove the null after insert
-      } else {
-        // Insert and shift right if occupied
-        if (currList[currList.length - 1] == null) {
-          for (let i = currList.length - 1; i > currIdx; i--) {
-            currList[i] = currList[i - 1];
-          }
-          currList[currIdx] = moved;
-        }
+      console.log('[DND] Reorder: prevIdx', prevIdx, 'currIdx', currIdx, 'currList before', JSON.stringify(currList));
+      const [moved] = currList.splice(prevIdx, 1);
+      console.log('[DND] After removal:', JSON.stringify(currList), 'moved:', moved);
+      // Remove the first null (if any) to keep the list compact
+      const nullIdx = currList.indexOf(null);
+      if (nullIdx !== -1) {
+        currList.splice(nullIdx, 1);
+        console.log('[DND] After null removal:', JSON.stringify(currList));
       }
+      currList.splice(currIdx, 0, moved);
+      console.log('[DND] After insert:', JSON.stringify(currList));
+      // If the list is now too long, trim the end
+      if (currList.length > this.scheduledGames[fieldIdx].length) {
+        currList.length = this.scheduledGames[fieldIdx].length;
+        console.log('[DND] After trim:', JSON.stringify(currList));
+      }
+      // Fill with nulls to maintain length
+      while (currList.length < this.scheduledGames[fieldIdx].length) {
+        currList.push(null);
+      }
+      console.log('[DND] Final currList:', JSON.stringify(currList));
     }
     this.scheduledGames = [...this.scheduledGames];
     this.unassignedGames = [...this.unassignedGames];
