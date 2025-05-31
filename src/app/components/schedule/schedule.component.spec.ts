@@ -38,12 +38,12 @@ describe('ScheduleComponent', () => {
 
     // Simulate assigning the first unassigned game to the first slot of field 0
     const event = {
-      previousContainer: { data: component.unassignedGames, id: 'unassignedGamesList' },
-      container: { data: component.scheduledGames[0], id: component.getDropListId(0) },
+      previousContainer: { data: { fieldIdx: null, slotIdx: null }, id: 'unassignedGamesList' },
+      container: { data: { fieldIdx: 0, slotIdx: 0 }, id: 'field-0-slot-0' },
       previousIndex: 0,
       currentIndex: 0
     } as any;
-    expect(() => component.dropToSchedule(event, 0)).not.toThrow();
+    expect(() => component.dropToSchedule(event)).not.toThrow();
     fixture.detectChanges();
     // The assigned slot should not be null or undefined
     expect(component.scheduledGames[0][0]).toBeTruthy();
@@ -69,39 +69,39 @@ describe('ScheduleComponent', () => {
 
     // Drag first game to the second slot of the first field
     let event1 = {
-      previousContainer: { data: component.unassignedGames, id: 'unassignedGamesList' },
-      container: { data: component.scheduledGames[0], id: component.getDropListId(0) },
+      previousContainer: { data: { fieldIdx: null, slotIdx: null }, id: 'unassignedGamesList' },
+      container: { data: { fieldIdx: 0, slotIdx: 1 }, id: 'field-0-slot-1' },
       previousIndex: 0,
       currentIndex: 1
     } as any;
     expect(component.scheduledGames[0][1]).toBeNull();
-    expect(() => component.dropToSchedule(event1, 0)).not.toThrow();
+    expect(() => component.dropToSchedule(event1)).not.toThrow();
     fixture.detectChanges();
     expect(component.scheduledGames[0][1]).toBeTruthy();
     expect(component.unassignedGames.length).toBe(2);
 
     // Drag second game (now at index 0) to the last slot of the second field (should be index 2, but only if that slot is empty)
     let event2 = {
-      previousContainer: { data: component.unassignedGames, id: 'unassignedGamesList' },
-      container: { data: component.scheduledGames[1], id: component.getDropListId(1) },
+      previousContainer: { data: { fieldIdx: null, slotIdx: null }, id: 'unassignedGamesList' },
+      container: { data: { fieldIdx: 1, slotIdx: 2 }, id: 'field-1-slot-2' },
       previousIndex: 0,
       currentIndex: 2
     } as any;
     expect(component.scheduledGames[1][2]).toBeNull();
-    expect(() => component.dropToSchedule(event2, 1)).not.toThrow();
+    expect(() => component.dropToSchedule(event2)).not.toThrow();
     fixture.detectChanges();
     expect(component.scheduledGames[1][2]).toBeTruthy();
     expect(component.unassignedGames.length).toBe(1);
 
     // Drag third game (now at index 0) to the first slot of the first field
     let event3 = {
-      previousContainer: { data: component.unassignedGames, id: 'unassignedGamesList' },
-      container: { data: component.scheduledGames[0], id: component.getDropListId(0) },
+      previousContainer: { data: { fieldIdx: null, slotIdx: null }, id: 'unassignedGamesList' },
+      container: { data: { fieldIdx: 0, slotIdx: 0 }, id: 'field-0-slot-0' },
       previousIndex: 0,
       currentIndex: 0
     } as any;
     expect(component.scheduledGames[0][0]).toBeNull();
-    expect(() => component.dropToSchedule(event3, 0)).not.toThrow();
+    expect(() => component.dropToSchedule(event3)).not.toThrow();
     fixture.detectChanges();
     expect(component.scheduledGames[0][0]).toBeTruthy();
     expect(component.unassignedGames.length).toBe(0);
