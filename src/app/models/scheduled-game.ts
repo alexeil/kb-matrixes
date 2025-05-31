@@ -1,0 +1,6 @@
+export class ScheduledGame {
+  categoryName!: string;
+  teams!: string[];
+  originalCategoryIndex!: number;
+  originalGameIndex!: number;
+}

@@ -1,21 +1,15 @@
 import { Component, Input, OnChanges, SimpleChanges, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
-import { CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { Category } from '../../models/category';
 import { ChangeDetectorRef } from '@angular/core';
-import { from } from 'rxjs';
-
-interface ScheduledGame {
-  categoryName: string;
-  teams: string[];
-  originalCategoryIndex: number;
-  originalGameIndex: number;
-}
+import { ScheduledGame } from '../../models/scheduled-game';
 
 @Component({
   selector: 'app-schedule',
   templateUrl: './schedule.component.html',
   styleUrl: './schedule.component.sass'
 })
+
 export class ScheduleComponent implements OnChanges, AfterViewInit {
   @Input() categories: Category[] = [];
   @Input() scheduleStart: string = '10:00';
@@ -30,23 +24,19 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
 
   constructor(private cdr: ChangeDetectorRef) { }
 
-
   get slotDropListsArray(): CdkDropList[] {
     return this.slotDropLists ? this.slotDropLists.toArray() : [];
   }
 
-
   ngOnChanges(changes: SimpleChanges) {
-
-    console.log('Changes detected:', changes);
     // Always update schedule when fields or categories change
     const allGames = this.flattenGames();
     this.unassignedGames = [...allGames];
     // Create an array for each field
-    this.scheduledGames = Array(this.fields).fill(null).map(() => Array(allGames.length).fill(null));
-
-    console.log('Unassigned games:', this.unassignedGames);
-    console.log('Scheduled games:', this.scheduledGames);
+    this.scheduledGames = Array(this.fields)
+      .fill(null)
+      .map(() => Array(allGames.length)
+        .fill(null));
     this.cdr.detectChanges();
   }
 
@@ -99,110 +89,40 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
       .map((game, idx) => game ? { game, index: idx } : null)
       .filter((x): x is { game: ScheduledGame, index: number } => x !== null);
   }
-
-  // --- Simplified Drag-and-Drop Logic ---
-
   /**
-   * Handles dropping a game into a schedule field.
-   * - From unassigned: assign to the dropped slot if empty.
-   * - From same field: reorder within field.
-   * - From another field: move to the dropped slot if empty.
-   * If the slot is not empty, do nothing.
+   * Handles dropping a game into a field slot.
+   * - If dropping from unassigned, place in the slot if empty.
+   * - If reordering within the same field, reorder the games.
+   * - If moving from another field, swap the games if both slots are occupied.
    */
   dropToSchedule(event: CdkDragDrop<any>) {
     const fromFieldIdx = event.previousContainer.data.fieldIdx;
     const fromSlotIdx = event.previousContainer.data.slotIdx;
     const { fieldIdx, slotIdx } = event.container.data;
-    console.log('Drop event:', event, 'Field index:', fieldIdx, 'Slot index:', slotIdx);
+    const currentFieldScheduledGames = this.scheduledGames[fieldIdx];
 
-    const currList = this.scheduledGames[fieldIdx];
-
-
-    console.log('Drop event:', event, 'Field index:', fieldIdx, 'Drop index:', slotIdx);
     if (event.previousContainer === event.container) {
       // Reorder within the same field
-      console.log('Reordering within the same field:', fieldIdx, 'event.container.id', event.container.id);
       const draggables = this.getDraggableGames(fieldIdx);
-      console.log('Draggables:', draggables);
-
-
       const prevIdx = draggables[event.previousIndex].index;
       const currIdx = draggables[event.currentIndex].index;
-      console.log('Previous index:', prevIdx, 'Current index:', currIdx);
-
-      const [moved] = currList.splice(prevIdx, 1, null);
-      console.log('Moved game:', moved, 'from index:', prevIdx, 'to index:', currIdx);
-
-      // Remove the null placeholder left at prevIdx
-      currList.splice(prevIdx, 1);
-      // Insert the moved game at currIdx
-      currList.splice(currIdx, 0, moved);
-      // Ensure the list length remains the same by removing the last element
-      currList.length = this.scheduledGames[fieldIdx].length;
-
-      console.log('Final current list after reordering:', currList);
+      const [moved] = currentFieldScheduledGames.splice(prevIdx, 1, null);
+      currentFieldScheduledGames.splice(prevIdx, 1);
+      currentFieldScheduledGames.splice(currIdx, 0, moved);
+      currentFieldScheduledGames.length = this.scheduledGames[fieldIdx].length;
     } else if (event.previousContainer.id === 'unassignedGamesList') {
       // Assign from unassigned: place in the dropped slot if empty
-      console.log('Assigning from unassigned games. event.previousContainer.id', event.previousContainer.id);
       const game = this.unassignedGames[event.previousIndex];
-
-      console.log('Game being assigned:', game, 'to previousIndex:', event.previousIndex, 'to index:', slotIdx);
-      if (currList[slotIdx] == null) {
+      if (currentFieldScheduledGames[slotIdx] == null) {
         this.unassignedGames.splice(event.previousIndex, 1);
-        currList[slotIdx] = game;
+        currentFieldScheduledGames[slotIdx] = game;
       }
     } else {
       // Move from another field: place in the dropped slot if empty
-      console.log('Moving from another field or slot:', event.previousContainer.id, event.container.id);
-
-      console.log('From:', event.previousContainer.id, event.previousContainer.data.fieldIdx, event.previousContainer.data.slotIdx);
-
-      console.log('To:', event.container.id, event.container.data.fieldIdx, event.container.data.slotIdx);
-
-
-      console.log('this.scheduledGames:', this.scheduledGames);
-      console.log('From field index:', fromFieldIdx, 'From slot index:', fromSlotIdx);
-      console.log('To field index:', fieldIdx, 'To slot index:', slotIdx);
-
-
-      console.log('From slot:', this.scheduledGames[fromFieldIdx][fromSlotIdx]);
-      console.log('To slot:', this.scheduledGames[fieldIdx][slotIdx]);
-
       const fromGame = this.scheduledGames[fromFieldIdx][fromSlotIdx];
-      console.log('From game:', fromGame, 'at field:', fromFieldIdx, 'slot:', fromSlotIdx);
       const toGame = this.scheduledGames[fieldIdx][slotIdx];
-      console.log('To game:', toGame, 'at field:', fieldIdx, 'slot:', slotIdx);
-
-      // const prevList = event.previousContainer.data;
-      // const game = prevList[fromSlotIdx];
-      // console.log('Game being moved:', game, 'from field:', fromFieldIdx, 'from slot:', fromSlotIdx, 'to field:', fieldIdx, 'to slot:', slotIdx);
-
-  
-        this.scheduledGames[fromFieldIdx][fromSlotIdx] = toGame; // Clear the previous slot
-        this.scheduledGames[fieldIdx][slotIdx] = fromGame; // Assign the game to the new slot
-
-        console.log('Game moved successfully:', fromGame, 'to field:', fieldIdx, 'slot:', slotIdx);
-  
-
-      //  if (currList[slotIdx] == null) {
-      // prevList[fromSlotIdx] = null;
-      // currList[slotIdx] = game;
-
-
-
-      //    this.scheduledGames[fromFieldIdx][fromSlotIdx] = null; // Clear the previous slot
-      //   this.scheduledGames[fieldIdx][slotIdx] = game; // Assign the game to the new slot
-      //   console.log('Game moved successfully:', game, 'to field:', fieldIdx, 'slot:', slotIdx);
-      // }
-
-      // const fromFieldIdx = this.scheduledGames.findIndex(list => list === prevList);
-      // const draggables = this.getDraggableGames(fromFieldIdx);
-      // const prevIdx = draggables[event.previousIndex].index;
-      /* const game = prevList[prevIdx];
-        if (currList[slotIdx] == null) {
-          prevList[prevIdx] = null;
-          currList[slotIdx] = game;
-        }*/
+      this.scheduledGames[fromFieldIdx][fromSlotIdx] = toGame;
+      this.scheduledGames[fieldIdx][slotIdx] = fromGame;
     }
     this.scheduledGames = [...this.scheduledGames];
     this.unassignedGames = [...this.unassignedGames];
