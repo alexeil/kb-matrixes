@@ -28,7 +28,7 @@
 
 <mat-tab-group [(selectedIndex)]="mainTabIndex">
   <!-- Teams/Matrix/Game Sheets Tab -->
-  <mat-tab label="Teams & Matrix">
+  <mat-tab label="Register Teams & select Matrix">
     <mat-tab-group [(selectedIndex)]="selectedCategoryIndex">
       <mat-tab *ngFor="let cat of categories; let i = index; trackBy: trackByCategoryId">
         <ng-template mat-tab-label>
@@ -46,20 +46,21 @@
           <app-team-input [teams]="cat.teams" [catIndex]="i"></app-team-input>
           <app-matrix [teams]="cat.teams" [catIndex]="i"></app-matrix>
         </div>
-
-        <br /><br />
-
-        <app-ranking [lang]="lang" [catIndex]="i"></app-ranking>
-
-        <app-game-sheet [catIndex]="i"></app-game-sheet>
-
       </mat-tab>
     </mat-tab-group>
   </mat-tab>
 
   <!-- Schedule Tab -->
-  <mat-tab label="Schedule">
-    <app-schedule [categories]="categories" [scheduleStart]="scheduleStart"
-      [scheduleInterval]="scheduleInterval" [fields]="scheduleFields"></app-schedule>
+  <mat-tab label="Create the Schedule">
+    <app-schedule [categories]="categories" [scheduleStart]="scheduleStart" [scheduleInterval]="scheduleInterval"
+      [fields]="scheduleFields"></app-schedule>
+  </mat-tab>
+
+  <mat-tab label="Let's print it!">
+
+    <div *ngFor="let cat of categories; let i = index;">
+      <app-ranking [lang]="lang" [catIndex]="i"></app-ranking>
+      <app-game-sheet [catIndex]="i"></app-game-sheet>
+    </div>
   </mat-tab>
 </mat-tab-group>

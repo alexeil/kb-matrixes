@@ -15,6 +15,7 @@ export class RankingComponent implements OnInit, OnDestroy {
   @ViewChild('rankingTable') rankingTable!: ElementRef;
 
   teams: string[] = [];
+  categoryName: string = '';
   private sub!: Subscription;
 
   get tableHeaders() {
@@ -47,6 +48,7 @@ export class RankingComponent implements OnInit, OnDestroy {
     this.sub = this.catState.categories$.subscribe(categories => {
       const cat = categories[this.catIndex];
       this.teams = cat ? cat.teams : [];
+      this.categoryName = cat ? cat.name : '';
     });
   }
 

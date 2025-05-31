@@ -15,6 +15,7 @@ export class GameSheetComponent implements OnInit, OnDestroy {
   matchMatrix: (string | number)[][] = [];
   teams: string[] = [];
   teamLabels = ['Blue', 'Gray', 'Black'];
+  categoryName: string = '';
 
   @ViewChild('gameSheets') gameSheets!: ElementRef;
 
@@ -28,6 +29,7 @@ export class GameSheetComponent implements OnInit, OnDestroy {
       if (cat) {
         this.matchMatrix = cat.displayMatrix;
         this.teams = cat.teams;
+        this.categoryName = cat.name;
       }
     });
   }

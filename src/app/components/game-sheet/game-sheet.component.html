@@ -1,7 +1,6 @@
 <div *ngIf="matchMatrix.length > 0">
-    
-    <h2>Game sheets</h2>
 
+<h2> {{ categoryName }} - Game sheets</h2>
     <button mat-raised-button color="accent" (click)="printGameSheets()">Print to PDF</button>
 
     <div #gameSheets class="game-sheets-container">
