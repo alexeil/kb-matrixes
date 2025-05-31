@@ -169,4 +169,87 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
     this.unassignedGames = [...this.unassignedGames];
     this.cdr.detectChanges();
   }
+
+  /**
+   * Unassign all games (reset schedule)
+   */
+  resetSchedule() {
+    // Move all scheduled games back to unassignedGames
+    const allGames: ScheduledGame[] = [];
+    for (const field of this.scheduledGames) {
+      for (const game of field) {
+        if (game) allGames.push(game);
+      }
+    }
+    this.unassignedGames = [...this.unassignedGames, ...allGames];
+    this.scheduledGames = this.scheduledGames.map(field => field.map(() => null));
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Assign all games to fields in a generic way:
+   * - If number of categories equals fields, assign each category to a field.
+   * - If more categories than fields, distribute categories round-robin to fields.
+   * - If more fields than categories, assign categories to fields in order, then fill remaining fields round-robin.
+   * - If only one field, assign all games in order.
+   */
+  assignAllGames() {
+    // Clear all scheduled games
+    this.scheduledGames = this.scheduledGames.map(field => field.map(() => null));
+    const allGames = this.flattenGames();
+    const numFields = this.fields;
+    const numCategories = this.categories.length;
+   
+    // Group games by category
+    const gamesByCategory: ScheduledGame[][] = Array(numCategories).fill(null).map(() => []);
+    allGames.forEach(game => {
+      gamesByCategory[game.originalCategoryIndex].push(game);
+    });
+
+    // Prepare assignment
+    let fieldAssignments: ScheduledGame[][] = Array(numFields).fill(null).map(() => []);
+    if (numFields === 1) {
+      // All games in order
+      fieldAssignments[0] = allGames.slice();
+    } else if (numFields === numCategories) {
+      // Each category to a field
+      for (let i = 0; i < numFields; i++) {
+        fieldAssignments[i] = gamesByCategory[i] ? gamesByCategory[i].slice() : [];
+      }
+    } else if (numCategories > numFields) {
+      // More categories than fields: distribute categories round-robin
+      let fieldIdx = 0;
+      for (let catIdx = 0; catIdx < numCategories; catIdx++) {
+        for (const game of gamesByCategory[catIdx]) {
+          fieldAssignments[fieldIdx].push(game);
+        }
+        fieldIdx = (fieldIdx + 1) % numFields;
+      }
+    } else {
+      // More fields than categories: assign categories to fields in order, then fill remaining fields round-robin
+      let catIdx = 0;
+      for (let fieldIdx = 0; fieldIdx < numFields; fieldIdx++) {
+        if (catIdx < numCategories) {
+          fieldAssignments[fieldIdx] = gamesByCategory[catIdx].slice();
+        }
+        catIdx++;
+      }
+      // If there are still unassigned games (e.g. not enough categories), fill remaining fields round-robin
+      const assignedGames = fieldAssignments.flat();
+      const unassigned = allGames.filter(g => !assignedGames.includes(g));
+      let idx = 0;
+      for (const game of unassigned) {
+        fieldAssignments[idx % numFields].push(game);
+        idx++;
+      }
+    }
+    // Assign to scheduledGames and clear unassignedGames
+    for (let fieldIdx = 0; fieldIdx < numFields; fieldIdx++) {
+      for (let slotIdx = 0; slotIdx < fieldAssignments[fieldIdx].length; slotIdx++) {
+        this.scheduledGames[fieldIdx][slotIdx] = fieldAssignments[fieldIdx][slotIdx];
+      }
+    }
+    this.unassignedGames = [];
+    this.cdr.detectChanges();
+  }
 }

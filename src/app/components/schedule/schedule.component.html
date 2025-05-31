@@ -1,4 +1,14 @@
+<!-- Action buttons to assign all games or reset schedule -->
+<div style="margin-bottom: 16px; display: flex; gap: 8px;">
+    <button mat-raised-button color="primary" (click)="assignAllGames()">Assign All Games</button>
+    <button mat-raised-button color="warn" (click)="resetSchedule()">Reset Schedule</button>
+</div>
+
+
 <div class="schedule-dnd-container">
+
+
+
     <!-- Unassigned games list -->
     <div class="unassigned-games" cdkDropList [id]="'unassignedGamesList'" #unassignedGamesList="cdkDropList"
         [cdkDropListData]="unassignedGames" [cdkDropListConnectedTo]="dropListIds"
@@ -10,6 +20,8 @@
             </mat-card>
         </div>
     </div>
+
+
 
     <!-- Schedule lists for each field -->
     <div class="fields-container" style="display: flex">
