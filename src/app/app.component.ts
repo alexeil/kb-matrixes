@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { CategoryStateService } from './services/category-state.service';
+import { ScheduleStateService } from './services/schedule-state.service';
+import { ScheduleConfigService } from './services/schedule-config.service';
 import { Category } from './models/category';
 
 @Component({
@@ -11,15 +13,16 @@ export class AppComponent {
   categories: Category[] = [];
   selectedCategoryIndex = 0;
   mainTabIndex = 0;
-  scheduleStart: string = '10:00';
-  scheduleInterval: number = 45; // in minutes
-  scheduleFields: number = 1;
 
   lang: 'en' | 'cz' = 'en';
   teamLabels = ['M', 'B', 'Č'];
   tournamentLocation: string = '';
 
-  constructor(public catState: CategoryStateService) {
+  constructor(
+    public catState: CategoryStateService,
+    private scheduleState: ScheduleStateService,
+    public scheduleConfig: ScheduleConfigService
+  ) {
     let previousLength = 0;
     this.catState.categories$.subscribe(cats => {
       // If a category was added, select the last one
@@ -33,6 +36,31 @@ export class AppComponent {
       this.categories = cats;
       previousLength = cats.length;
     });
+
+    // Auto-load shared config from URL on page load
+    const params = new URLSearchParams(window.location.search);
+    const share = params.get('share');
+    if (share) {
+      try {
+        const decoded = this.atobUnicode(share);
+        const state = JSON.parse(decoded);
+
+        console.log('Loading setup from shared URL:', state);
+        this.categories = state.categories;
+        this.catState.setCategories(state.categories); // Ensure service is updated for all components
+        // Restore schedule config state if present
+        if (state.scheduleStart) this.scheduleConfig.setScheduleStart(state.scheduleStart);
+        if (state.scheduleInterval) this.scheduleConfig.setScheduleInterval(state.scheduleInterval);
+        if (state.scheduleFields) this.scheduleConfig.setFields(state.scheduleFields);
+        // Restore schedule state if present
+        if (state.scheduledGames) this.scheduleState.setScheduledGames(state.scheduledGames);
+        if (state.unassignedGames) this.scheduleState.setUnassignedGames(state.unassignedGames);
+
+        console.log('Setup loaded from shared URL!');
+      } catch (e) {
+        console.error('Failed to load from shared URL.');
+      }
+    }
   }
 
   get selectedCategory() {
@@ -87,5 +115,37 @@ export class AppComponent {
     ];
     this.catState.setCategories(categories);
     this.selectedCategoryIndex = 0;
+  }
+
+  // Helper functions for Unicode-safe base64
+  btoaUnicode(str: string) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+      String.fromCharCode(parseInt(p1, 16))
+    ));
+  }
+  atobUnicode(str: string) {
+    return decodeURIComponent(Array.prototype.map.call(atob(str), (c: string) =>
+      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    ).join(''));
+  }
+
+  copyShareUrl() {
+    const state = {
+      categories: this.categories,
+      scheduleStart: this.scheduleConfig.scheduleStart,
+      scheduleInterval: this.scheduleConfig.scheduleInterval,
+      scheduleFields: this.scheduleConfig.fields,
+      tournamentLocation: this.tournamentLocation,
+      // Add schedule state
+      scheduledGames: this.scheduleState.scheduledGames,
+      unassignedGames: this.scheduleState.unassignedGames
+    };
+    const json = JSON.stringify(state);
+
+    console.log('Creating shareable URL with state:', state);
+    const encoded = this.btoaUnicode(json);
+    const url = `${window.location.origin}${window.location.pathname}?share=${encoded}`;
+    navigator.clipboard.writeText(url);
+    console.log('Shareable URL copied to clipboard!');
   }
 }

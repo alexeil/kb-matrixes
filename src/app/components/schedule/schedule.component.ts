@@ -1,34 +1,83 @@
-import { Component, Input, OnChanges, SimpleChanges, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { CategoryStateService } from '../../services/category-state.service';
+import { ScheduleStateService } from '../../services/schedule-state.service';
+import { ScheduleConfigService } from '../../services/schedule-config.service';
 import { Category } from '../../models/category';
-import { ChangeDetectorRef } from '@angular/core';
 import { ScheduledGame } from '../../models/scheduled-game';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-schedule',
   templateUrl: './schedule.component.html',
   styleUrl: './schedule.component.sass'
 })
-
-export class ScheduleComponent implements OnChanges, AfterViewInit {
-  @Input() categories: Category[] = [];
-  @Input() scheduleStart: string = '10:00';
-  @Input() scheduleInterval: number = 45;
-  @Input() fields: number = 1;
-
-  unassignedGames: ScheduledGame[] = [];
+export class ScheduleComponent implements OnInit, AfterViewInit {
+  categories: Category[] = [];
   scheduledGames: (ScheduledGame | null)[][] = [];
+  unassignedGames: ScheduledGame[] = [];
   dragOverIndex: number | null = null;
+  scheduleStart: string = '10:00';
+  scheduleInterval: number = 45;
+  fields: number = 1;
+  initialized: boolean = false;
 
   @ViewChildren('slotDropList') slotDropLists!: QueryList<CdkDropList>;
 
-  constructor(private cdr: ChangeDetectorRef) { }
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private catState: CategoryStateService,
+    private scheduleState: ScheduleStateService,
+    private scheduleConfig: ScheduleConfigService
+  ) { }
 
-  get slotDropListsArray(): CdkDropList[] {
-    return this.slotDropLists ? this.slotDropLists.toArray() : [];
+  ngOnInit() {
+
+    combineLatest([
+      this.scheduleConfig.scheduleStart$,
+      this.scheduleConfig.scheduleInterval$,
+      this.scheduleConfig.fields$,
+
+      this.catState.categories$,
+
+      this.scheduleState.scheduledGames$,
+      this.scheduleState.unassignedGames$
+
+    ]).subscribe(([scheduleStart, scheduleInter, fields, categories, scheduledGames, unassignedGames]) => {
+      this.scheduleStart = scheduleStart;
+      this.scheduleInterval = scheduleInter;
+
+      if (!this.initialized) {
+        console.log('Initializing schedule component with fields:', fields, 'and categories:', categories.length);
+        this.categories = categories;
+        this.fields = fields;
+        this.initSchedule();
+        if (scheduledGames.length != 0 || unassignedGames.length != 0) {
+          this.scheduledGames = scheduledGames.map(arr => [...arr]);
+          this.unassignedGames = [...unassignedGames];
+        }
+        this.initialized = true;
+      } else {
+        if (this.categoriesAreDifferent(this.categories, categories) || this.fields != fields) {
+          this.categories = categories;
+          this.fields = fields;
+          this.initSchedule();
+        }
+      }
+    });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  private categoriesAreDifferent(a: Category[], b: Category[]): boolean {
+  return JSON.stringify(a) !== JSON.stringify(b);
+}
+
+  ngAfterViewInit() {
+    // Needed for [cdkDropListConnectedTo]
+  }
+
+
+  initSchedule() {
+    console.log('Initializing schedule with fields:', this.fields, 'and categories:', this.categories.length);
     // Always update schedule when fields or categories change
     const allGames = this.flattenGames();
     this.unassignedGames = [...allGames];
@@ -38,10 +87,6 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
       .map(() => Array(allGames.length)
         .fill(null));
     this.cdr.detectChanges();
-  }
-
-  ngAfterViewInit() {
-    // Needed for [cdkDropListConnectedTo]
   }
 
   flattenGames(): ScheduledGame[] {
@@ -115,6 +160,8 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
     // Ensure the scheduled games and unassigned games are updated
     this.scheduledGames = [...this.scheduledGames];
     this.unassignedGames = [...this.unassignedGames];
+    this.scheduleState.setScheduledGames(this.scheduledGames);
+    this.scheduleState.setUnassignedGames(this.unassignedGames);
     this.cdr.detectChanges();
   }
 
@@ -167,22 +214,8 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
     // Ensure the scheduled games and unassigned games are updated
     this.scheduledGames = [...this.scheduledGames];
     this.unassignedGames = [...this.unassignedGames];
-    this.cdr.detectChanges();
-  }
-
-  /**
-   * Unassign all games (reset schedule)
-   */
-  resetSchedule() {
-    // Move all scheduled games back to unassignedGames
-    const allGames: ScheduledGame[] = [];
-    for (const field of this.scheduledGames) {
-      for (const game of field) {
-        if (game) allGames.push(game);
-      }
-    }
-    this.unassignedGames = [...this.unassignedGames, ...allGames];
-    this.scheduledGames = this.scheduledGames.map(field => field.map(() => null));
+    this.scheduleState.setScheduledGames(this.scheduledGames);
+    this.scheduleState.setUnassignedGames(this.unassignedGames);
     this.cdr.detectChanges();
   }
 
@@ -199,7 +232,7 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
     const allGames = this.flattenGames();
     const numFields = this.fields;
     const numCategories = this.categories.length;
-   
+
     // Group games by category
     const gamesByCategory: ScheduledGame[][] = Array(numCategories).fill(null).map(() => []);
     allGames.forEach(game => {
@@ -251,5 +284,7 @@ export class ScheduleComponent implements OnChanges, AfterViewInit {
     }
     this.unassignedGames = [];
     this.cdr.detectChanges();
+    this.scheduleState.setScheduledGames(this.scheduledGames);
+    this.scheduleState.setUnassignedGames(this.unassignedGames);
   }
 }

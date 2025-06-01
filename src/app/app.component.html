@@ -8,23 +8,25 @@
 
   <mat-form-field appearance="outline">
     <mat-label>Start Time</mat-label>
-    <input matInput type="time" [(ngModel)]="scheduleStart" />
+    <input matInput type="time" [ngModel]="scheduleConfig.scheduleStart" (ngModelChange)="scheduleConfig.setScheduleStart($event)" />
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>Duration between games (minutes)</mat-label>
-    <input matInput type="number" [(ngModel)]="scheduleInterval" min="1" />
+    <input matInput type="number" [ngModel]="scheduleConfig.scheduleInterval" (ngModelChange)="scheduleConfig.setScheduleInterval($event)" min="1" />
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>Number of fields</mat-label>
-    <input matInput type="number" [(ngModel)]="scheduleFields" min="1" />
+    <input matInput type="number" [ngModel]="scheduleConfig.fields" (ngModelChange)="scheduleConfig.setFields($event)" min="1" />
   </mat-form-field>
 </div>
 
 <button mat-raised-button color="primary" (click)="addCategory()">Add Category</button>
 
 <button mat-raised-button color="accent" (click)="setTestData()">Set Test Data</button>
+
+<button mat-raised-button color="primary" (click)="copyShareUrl()">Share Setup</button>
 
 <mat-tab-group [(selectedIndex)]="mainTabIndex">
   <!-- Teams/Matrix/Game Sheets Tab -->
@@ -56,8 +58,7 @@
 
   <!-- Schedule Tab -->
   <mat-tab label="Create the Schedule">
-    <app-schedule [categories]="categories" [scheduleStart]="scheduleStart" [scheduleInterval]="scheduleInterval"
-      [fields]="scheduleFields"></app-schedule>
+    <app-schedule></app-schedule>
   </mat-tab>
 
   <mat-tab label="Let's print it!">
