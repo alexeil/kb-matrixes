@@ -12,11 +12,12 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTableModule } from '@angular/material/table';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScheduleComponent } from './components/schedule/schedule.component';
+import { GameSheetComponent } from './components/game-sheet/game-sheet.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent, ScheduleComponent],
+      declarations: [AppComponent, ScheduleComponent, GameSheetComponent],
       imports: [
         CommonModule,
         MatTabsModule,
