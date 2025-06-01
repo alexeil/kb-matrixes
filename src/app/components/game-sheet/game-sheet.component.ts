@@ -1,21 +1,21 @@
-import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef } from '@angular/core';
 import { CategoryStateService } from '../../services/category-state.service';
 import { Subscription } from 'rxjs';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { ScheduledGame } from '../../models/scheduled-game';
 
 @Component({
   selector: 'app-game-sheet',
   templateUrl: './game-sheet.component.html',
   styleUrls: ['./game-sheet.component.sass']
 })
-export class GameSheetComponent implements OnInit, OnDestroy {
+export class GameSheetComponent {
   @Input() catIndex!: number;
-
-  matchMatrix: (string | number)[][] = [];
-  teams: string[] = [];
+  @Input() fieldNumber!: number;
+  @Input() games!: (ScheduledGame | null) [];
   teamLabels = ['Blue', 'Gray', 'Black'];
-  categoryName: string = '';
+  setNumber = 5;
 
   @ViewChild('gameSheets') gameSheets!: ElementRef;
 
@@ -23,20 +23,6 @@ export class GameSheetComponent implements OnInit, OnDestroy {
 
   constructor(private catState: CategoryStateService) { }
 
-  ngOnInit() {
-    this.sub = this.catState.categories$.subscribe(categories => {
-      const cat = categories[this.catIndex];
-      if (cat) {
-        this.matchMatrix = cat.displayMatrix;
-        this.teams = cat.teams;
-        this.categoryName = cat.name;
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.sub?.unsubscribe();
-  }
 
   printGameSheets() {
     const element = this.gameSheets.nativeElement;

@@ -18,6 +18,9 @@ export class AppComponent {
   teamLabels = ['M', 'B', 'Č'];
   tournamentLocation: string = '';
 
+  scheduledGames$ = this.scheduleState.scheduledGames$; // Observable<(ScheduledGame | null)[][]>
+
+
   constructor(
     public catState: CategoryStateService,
     private scheduleState: ScheduleStateService,

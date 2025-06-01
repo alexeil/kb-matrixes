@@ -8,17 +8,20 @@
 
   <mat-form-field appearance="outline">
     <mat-label>Start Time</mat-label>
-    <input matInput type="time" [ngModel]="scheduleConfig.scheduleStart" (ngModelChange)="scheduleConfig.setScheduleStart($event)" />
+    <input matInput type="time" [ngModel]="scheduleConfig.scheduleStart"
+      (ngModelChange)="scheduleConfig.setScheduleStart($event)" />
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>Duration between games (minutes)</mat-label>
-    <input matInput type="number" [ngModel]="scheduleConfig.scheduleInterval" (ngModelChange)="scheduleConfig.setScheduleInterval($event)" min="1" />
+    <input matInput type="number" [ngModel]="scheduleConfig.scheduleInterval"
+      (ngModelChange)="scheduleConfig.setScheduleInterval($event)" min="1" />
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>Number of fields</mat-label>
-    <input matInput type="number" [ngModel]="scheduleConfig.fields" (ngModelChange)="scheduleConfig.setFields($event)" min="1" />
+    <input matInput type="number" [ngModel]="scheduleConfig.fields" (ngModelChange)="scheduleConfig.setFields($event)"
+      min="1" />
   </mat-form-field>
 </div>
 
@@ -47,7 +50,7 @@
 
         <br /><br /><br />
 
-        
+
         <div class="team-matrix-grid">
           <app-team-input [teams]="cat.teams" [catIndex]="i"></app-team-input>
           <app-matrix [teams]="cat.teams" [catIndex]="i"></app-matrix>
@@ -65,7 +68,14 @@
 
     <div *ngFor="let cat of categories; let i = index;">
       <app-ranking [lang]="lang" [catIndex]="i"></app-ranking>
-      <app-game-sheet [catIndex]="i"></app-game-sheet>
     </div>
+
+    <div *ngIf="scheduledGames$ | async as scheduledGames">
+      <div *ngFor="let field of scheduledGames; let fieldIdx = index">
+         <app-game-sheet [catIndex]="1" [fieldNumber]="fieldIdx + 1" [games]="field"></app-game-sheet>
+      </div>
+    </div>
+
+    <app-game-sheet [catIndex]="1"></app-game-sheet>
   </mat-tab>
 </mat-tab-group>
