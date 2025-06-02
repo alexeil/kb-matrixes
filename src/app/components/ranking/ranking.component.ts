@@ -57,6 +57,9 @@ export class RankingComponent implements OnInit, OnDestroy {
   }
 
   printRanking() {
+    if (!this.rankingTable || !this.rankingTable.nativeElement) {
+      throw new TypeError('rankingTable is not available');
+    }
     const element = this.rankingTable.nativeElement;
     html2canvas(element).then(canvas => {
       const imgData = canvas.toDataURL('image/png');

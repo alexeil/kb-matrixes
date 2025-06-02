@@ -148,7 +148,49 @@ export class AppComponent {
     console.log('Creating shareable URL with state:', state);
     const encoded = this.btoaUnicode(json);
     const url = `${window.location.origin}${window.location.pathname}?share=${encoded}`;
-    navigator.clipboard.writeText(url);
-    console.log('Shareable URL copied to clipboard!');
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url);
+        console.log('Shareable URL copied to clipboard!');
+      }
+    } catch (e) {
+      // Gracefully handle clipboard errors
+      console.error('Clipboard error:', e);
+    }
+  }
+
+  onCategoryChange(index: number) {
+    this.selectedCategoryIndex = index;
+  }
+
+  onCategoryNameChange(newName: string, catIndex: number) {
+    const cat = this.categories[catIndex];
+    if (cat.name !== newName) {
+      this.catState.updateCategory(catIndex, { ...cat, name: newName });
+    }
+  }
+
+  onNumberOfFieldsChange(newFields: number, catIndex: number) {
+    const cat = this.categories[catIndex];
+    if (cat.numberOfFields !== newFields) {
+      this.catState.updateCategory(catIndex, { ...cat, numberOfFields: newFields });
+    }
+  }
+
+  onTabChange(event: { index: number }) {
+    this.selectedCategoryIndex = event.index;
+  }
+
+  importFromUrl() {
+    const encoded = window.prompt('Paste the base64-encoded setup:');
+    if (!encoded) return;
+    try {
+      const decoded = this.atobUnicode(encoded);
+      const categories = JSON.parse(decoded);
+      this.catState.setCategories(categories);
+      this.selectedCategoryIndex = 0;
+    } catch (e) {
+      alert('Failed to import setup.');
+    }
   }
 }
