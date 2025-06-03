@@ -14,7 +14,7 @@ import { MatCardModule } from '@angular/material/card';
   styleUrls: ['./game-sheet.component.sass'],
   imports: [
     CommonModule,
-    MatCardModule
+    MatCardModule,
   ]
 })
 export class GameSheetComponent {
