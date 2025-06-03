@@ -6,10 +6,14 @@ export class ScheduleConfigService {
   private scheduleStartSubject = new BehaviorSubject<string>('10:00');
   private scheduleIntervalSubject = new BehaviorSubject<number>(45);
   private fieldsSubject = new BehaviorSubject<number>(1);
+  private scheduleDateSubject = new BehaviorSubject<string>('');
+  private numberOfSetsSubject = new BehaviorSubject<number>(3);
 
   scheduleStart$ = this.scheduleStartSubject.asObservable();
   scheduleInterval$ = this.scheduleIntervalSubject.asObservable();
   fields$ = this.fieldsSubject.asObservable();
+  scheduleDate$ = this.scheduleDateSubject.asObservable();
+  numberOfSets$ = this.numberOfSetsSubject.asObservable();
 
   get scheduleStart() {
     return this.scheduleStartSubject.value;
@@ -20,6 +24,12 @@ export class ScheduleConfigService {
   get fields() {
     return this.fieldsSubject.value;
   }
+  get scheduleDate() {
+    return this.scheduleDateSubject.value;
+  }
+  get numberOfSets() {
+    return this.numberOfSetsSubject.value;
+  }
 
   setScheduleStart(val: string) {
     this.scheduleStartSubject.next(val);
@@ -29,5 +39,11 @@ export class ScheduleConfigService {
   }
   setFields(val: number) {
     this.fieldsSubject.next(val);
+  }
+  setScheduleDate(val: string) {
+    this.scheduleDateSubject.next(val);
+  }
+  setNumberOfSets(val: number) {
+    this.numberOfSetsSubject.next(val);
   }
 }

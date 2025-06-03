@@ -18,30 +18,6 @@ export class RankingComponent implements OnInit, OnDestroy {
   categoryName: string = '';
   private sub!: Subscription;
 
-  get tableHeaders() {
-    return this.lang === 'cz'
-      ? {
-        team: 'Jméno týmu',
-        matches: 'Zápasy',
-        sets: 'Sety',
-        fairplay: 'Fairplay',
-        total: 'Celkem',
-        totalMatches: 'Zápasy celkem',
-        rank: 'Pořadí',
-        match: 'Zápas'
-      }
-      : {
-        team: 'Team Name',
-        matches: 'Matches',
-        sets: 'Sets',
-        fairplay: 'Fairplay',
-        total: 'Total',
-        totalMatches: 'Total Matches',
-        rank: 'Rank',
-        match: 'Match'
-      };
-  }
-
   constructor(private catState: CategoryStateService) { }
 
   ngOnInit() {

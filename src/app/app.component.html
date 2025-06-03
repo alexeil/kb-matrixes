@@ -7,6 +7,12 @@
   </mat-form-field>
 
   <mat-form-field appearance="outline">
+    <mat-label>Date</mat-label>
+    <input matInput type="date" [ngModel]="scheduleConfig.scheduleDate"
+      (ngModelChange)="scheduleConfig.setScheduleDate($event)" placeholder="Select date" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
     <mat-label>Start Time</mat-label>
     <input matInput type="time" [ngModel]="scheduleConfig.scheduleStart"
       (ngModelChange)="scheduleConfig.setScheduleStart($event)" />
@@ -22,6 +28,12 @@
     <mat-label>Number of fields</mat-label>
     <input matInput type="number" [ngModel]="scheduleConfig.fields" (ngModelChange)="scheduleConfig.setFields($event)"
       min="1" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Number of Sets</mat-label>
+    <input matInput type="number" [ngModel]="scheduleConfig.numberOfSets"
+      (ngModelChange)="scheduleConfig.setNumberOfSets($event)" min="1" placeholder="e.g. 3" />
   </mat-form-field>
 </div>
 
@@ -72,7 +84,7 @@
 
     <div *ngIf="scheduledGames$ | async as scheduledGames">
       <div *ngFor="let field of scheduledGames; let fieldIdx = index">
-         <app-game-sheet [catIndex]="1" [fieldNumber]="fieldIdx + 1" [games]="field"></app-game-sheet>
+        <app-game-sheet [catIndex]="1" [fieldNumber]="fieldIdx + 1" [games]="field"></app-game-sheet>
       </div>
     </div>
 
