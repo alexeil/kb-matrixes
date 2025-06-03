@@ -1,10 +1,27 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
 import { CategoryStateService } from '../../services/category-state.service';
 
 @Component({
   selector: 'app-team-input',
+  standalone: true,
   templateUrl: './team-input.component.html',
-  styleUrls: ['./team-input.component.sass']
+  styleUrls: ['./team-input.component.sass'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatListModule,
+    MatIconModule
+  ]
 })
 export class TeamInputComponent {
   teamName = '';

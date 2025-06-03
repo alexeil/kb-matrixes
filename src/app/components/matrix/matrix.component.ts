@@ -1,9 +1,24 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { CategoryStateService } from '../../services/category-state.service';
 import { MATCH_MATRICES } from '../../utils/matrixes.data';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-matrix',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatButtonModule
+  ],
   templateUrl: './matrix.component.html',
   styleUrls: ['./matrix.component.sass']
 })

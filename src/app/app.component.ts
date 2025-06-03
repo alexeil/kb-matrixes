@@ -3,9 +3,50 @@ import { CategoryStateService } from './services/category-state.service';
 import { ScheduleStateService } from './services/schedule-state.service';
 import { ScheduleConfigService } from './services/schedule-config.service';
 import { Category } from './models/category';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatTableModule } from '@angular/material/table';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { TeamInputComponent } from './components/team-input/team-input.component';
+import { MatrixComponent } from './components/matrix/matrix.component';
+import { GameSheetComponent } from './components/game-sheet/game-sheet.component';
+import { RankingComponent } from './components/ranking/ranking.component';
+import { ScheduleComponent } from './components/schedule/schedule.component';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatListModule,
+    MatIconModule,
+    MatCardModule,
+    MatGridListModule,
+    MatTableModule,
+    DragDropModule,
+    MatTabsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    TeamInputComponent,
+    MatrixComponent,
+    GameSheetComponent,
+    RankingComponent,
+    ScheduleComponent
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass']
 })

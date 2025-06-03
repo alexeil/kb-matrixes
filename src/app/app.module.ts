@@ -23,14 +23,6 @@ import {MatTimepickerModule} from '@angular/material/timepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        TeamInputComponent,
-        MatrixComponent,
-        GameSheetComponent,
-        RankingComponent,
-        ScheduleComponent
-    ],
     imports: [
         BrowserModule,
         FormsModule,
@@ -45,7 +37,14 @@ import { MatNativeDateModule } from '@angular/material/core';
         DragDropModule,
         MatTabsModule,
         MatDatepickerModule,
-        MatNativeDateModule
+        MatNativeDateModule,
+        // Standalone components only in imports
+        AppComponent,
+        TeamInputComponent,
+        MatrixComponent,
+        GameSheetComponent,
+        RankingComponent,
+        ScheduleComponent
     ],
     providers: [
         provideAnimationsAsync()

@@ -6,11 +6,28 @@ import { ScheduleConfigService } from '../../services/schedule-config.service';
 import { Category } from '../../models/category';
 import { ScheduledGame } from '../../models/scheduled-game';
 import { combineLatest } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-schedule',
+  standalone: true,
   templateUrl: './schedule.component.html',
-  styleUrl: './schedule.component.sass'
+  styleUrls: ['./schedule.component.sass'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatTableModule,
+    MatIconModule,
+    DragDropModule,
+    MatButtonModule
+  ],
 })
 export class ScheduleComponent implements OnInit, AfterViewInit {
   categories: Category[] = [];

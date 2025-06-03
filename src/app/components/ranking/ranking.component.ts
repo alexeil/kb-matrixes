@@ -4,10 +4,23 @@ import { Subscription } from 'rxjs';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { ScheduleConfigService } from '../../services/schedule-config.service';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-ranking',
+  standalone: true,
   templateUrl: './ranking.component.html',
-  styleUrl: './ranking.component.sass'
+  styleUrls: ['./ranking.component.sass'],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatTableModule,
+    MatButtonModule,
+    MatInputModule,
+  ]
 })
 export class RankingComponent implements OnInit, OnDestroy {
   @Input() lang: string = 'en';

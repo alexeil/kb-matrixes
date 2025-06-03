@@ -4,11 +4,18 @@ import { Subscription } from 'rxjs';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { ScheduledGame } from '../../models/scheduled-game';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-game-sheet',
+  standalone: true,
   templateUrl: './game-sheet.component.html',
-  styleUrls: ['./game-sheet.component.sass']
+  styleUrls: ['./game-sheet.component.sass'],
+  imports: [
+    CommonModule,
+    MatCardModule
+  ]
 })
 export class GameSheetComponent {
   @Input() catIndex!: number;
