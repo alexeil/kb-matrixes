@@ -4,8 +4,8 @@
     <button mat-raised-button color="accent" (click)="printGameSheets()">Print to PDF</button>
 
     <div #gameSheets class="game-sheets-container">
-        <ng-container *ngFor="let match of games; let idx = index">
-            <ng-container *ngIf="match?.teams">
+        @for (match of games; track match; let idx = $index) {
+            @if (match?.teams) {
                 <div  style="border: 1px solid #ccc; margin: 10px;">
                 <h3>Game #{{ idx +1 }}</h3>
                 <div class="game-sheet-grid">
@@ -16,11 +16,11 @@
                     <div class="grid-header" style="grid-column: 12; grid-row: 1 / span 2;">Celkem</div>
 
 
-                    <ng-container *ngFor="let set of [1, 2, 3, 4, 5, 6, 7]">
+                    @for (set of [1, 2, 3, 4, 5, 6, 7]; track set) {
                         <div class="grid-header set-header">{{ set }}</div>
-                    </ng-container>
+                    }
 
-                    <ng-container *ngFor="let color of teamLabels; let i = index">
+                    @for (color of teamLabels; track color; let i = $index) {
                         <div class="grid-cell team-color">{{ color }}</div>
                         <div class="grid-cell team-name">{{ match?.teams?.[i] }}</div>
                         <div class="grid-cell"></div>
@@ -33,10 +33,10 @@
                         <div class="grid-cell"></div>
                         <div class="grid-cell"></div>
                         <div class="grid-cell"></div>
-                    </ng-container>
+                    }
                 </div>
                 </div>
-            </ng-container>
-        </ng-container>
+            }
+        }
     </div>
 </div>

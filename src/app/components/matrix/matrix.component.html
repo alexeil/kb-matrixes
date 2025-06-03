@@ -3,10 +3,11 @@
   <input matInput type="number" [(ngModel)]="numberOfFields" min="1" (ngModelChange)="onNumberOfFieldsChange()" />
 </mat-form-field>
 
-<div *ngIf="!displayMatrix.length">No matrix exists for this number of teams/fields</div>
-<div *ngIf="displayMatrix.length">
+@if (!displayMatrix.length) {
+  <div>No matrix exists for this number of teams/fields</div>
+}
+@if (displayMatrix.length) {
   <h2>Matrix options</h2>
-
   <table mat-table [dataSource]="displayMatrix" class="mat-elevation-z2" style="min-width: 25%;">
     <ng-container matColumnDef="match">
       <th mat-header-cell *matHeaderCellDef>Match</th>
@@ -24,8 +25,13 @@
       <th mat-header-cell *matHeaderCellDef>Black</th>
       <td mat-cell *matCellDef="let row">{{ row[3] }}</td>
     </ng-container>
-
     <tr mat-header-row *matHeaderRowDef="['match', 'blue', 'white', 'black']"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['match', 'blue', 'white', 'black'];"></tr>
+    @for (row of displayMatrix; track row; let i = $index) {
+      <tr>
+        @for (cell of row; track cell) {
+          <td>{{ cell }}</td>
+        }
+      </tr>
+    }
   </table>
-</div>
+}

@@ -11,60 +11,61 @@
         [cdkDropListData]="unassignedGames" [cdkDropListConnectedTo]="dropListIds"
         (cdkDropListDropped)="dropToUnassigned($event)">
         <h3>Unassigned Games</h3>
-        <div *ngFor="let game of unassignedGames" cdkDrag>
-            <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
-                {{game?.categoryName}} - {{game?.teams?.join(' VS ')}}
-            </mat-card>
-        </div>
+        @for (game of unassignedGames; track game) {
+            <div cdkDrag>
+                <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
+                    {{game?.categoryName}} - {{game?.teams?.join(' VS ')}}
+                </mat-card>
+            </div>
+        }
     </div>
 
     <!-- Schedule lists for each field -->
     <div class="fields-container">
-        <div *ngFor="let games of scheduledGames; let fieldIdx = index" class="scheduled-games-field">
-            <h3>Field {{ fieldIdx + 1 }}</h3>
-            <div *ngFor="let game of games; let idx = index" class="schedule-slot">
-                <div cdkDropList [id]="'field-' + fieldIdx + '-slot-' + idx"
-                    [cdkDropListData]="{ fieldIdx: fieldIdx, slotIdx: idx }" [cdkDropListConnectedTo]="dropListIds"
-                    (cdkDropListDropped)="dropToSchedule($event)">
+        @for (field of scheduledGames; track field; let fieldIdx = $index) {
+          <div class="scheduled-games-field">
+              <h3>Field {{ fieldIdx + 1 }}</h3>
+              @for (game of field; track game; let idx = $index) {
+                  <div class="schedule-slot">
+                      <div cdkDropList [id]="'field-' + fieldIdx + '-slot-' + idx"
+                          [cdkDropListData]="{ fieldIdx: fieldIdx, slotIdx: idx }" [cdkDropListConnectedTo]="dropListIds"
+                          (cdkDropListDropped)="dropToSchedule($event)">
 
-                    <div cdkDrag [cdkDragData]="{ game: game, slot: idx, field: fieldIdx }">
-                        <div class="scheduled-game-card">
-                            <ng-container *ngIf="!game">
-                                <span class="game-empty">
-                                    {{ getTimeForIndex(idx) }} (Assign a game to this slot)
-                                </span>
-                            </ng-container>
+                          <div cdkDrag [cdkDragData]="{ game: game, slot: idx, field: fieldIdx }">
+                              <div class="scheduled-game-card">
+                                  @if (!game) {
+                                      <span class="game-empty">
+                                          {{ getTimeForIndex(idx) }} (Assign a game to this slot)
+                                      </span>
+                                  }
+                                  @if (game) {
+                                      <span class="game-info">
+                                          {{ getTimeForIndex(idx) }}   <br> {{ game.categoryName }}
+                                      </span>
+                                      <span class="game-info-teams">
+                                        {{ game.teams[0] }}<br>
+                                        {{ game.teams[1] }}<br>
+                                        {{ game.teams[2] }}<br>
+                                      </span>
+                                  }
 
-                            <ng-container *ngIf="game">
-                                <span class="game-info">
-                                    {{ getTimeForIndex(idx) }}   <br> {{ game.categoryName }}
-                                </span>
-                                <span class="game-info-teams">
-                                   
-                                    {{ game.teams[0] }}<br>
-                                    {{ game.teams[1] }}<br>
-                                    {{ game.teams[2] }}<br>
-                                </span>
-                            </ng-container>
-
-
-
-
-                            <!-- Game info on the left -->
+                                  <!-- Game info on the left -->
 
 
 
-                            <!-- Referee fields on the right -->
-                            <div *ngIf="game" class="referee-fields">
-                                <input type="text" [(ngModel)]="game.referees[0]" placeholder="Head referee"
-                                    class="referee-input" />
-                                <input type="text" [(ngModel)]="game.referees[1]" placeholder="Assistant referee"
-                                    class="referee-input" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                  <!-- Referee fields on the right -->
+                                  <div *ngIf="game" class="referee-fields">
+                                      <input type="text" [(ngModel)]="game.referees[0]" placeholder="Head referee"
+                                          class="referee-input" />
+                                      <input type="text" [(ngModel)]="game.referees[1]" placeholder="Assistant referee"
+                                          class="referee-input" />
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                }
             </div>
-        </div>
+          }
     </div>
 </div>
