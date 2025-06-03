@@ -4,10 +4,7 @@
     <button mat-raised-button color="warn" (click)="initSchedule()">Reset Schedule</button>
 </div>
 
-
 <div class="schedule-dnd-container">
-
-
 
     <!-- Unassigned games list -->
     <div class="unassigned-games" cdkDropList [id]="'unassignedGamesList'" #unassignedGamesList="cdkDropList"
@@ -21,10 +18,8 @@
         </div>
     </div>
 
-
-
     <!-- Schedule lists for each field -->
-    <div class="fields-container" style="display: flex">
+    <div class="fields-container">
         <div *ngFor="let games of scheduledGames; let fieldIdx = index" class="scheduled-games-field">
             <h3>Field {{ fieldIdx + 1 }}</h3>
             <div *ngFor="let game of games; let idx = index" class="schedule-slot">
@@ -33,11 +28,40 @@
                     (cdkDropListDropped)="dropToSchedule($event)">
 
                     <div cdkDrag [cdkDragData]="{ game: game, slot: idx, field: fieldIdx }">
-                        <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
-                            <span style="width: 80px; color: #888;">{{ getTimeForIndex(idx) }}</span>
-                            <span *ngIf="game == null" style="color: #aaa;">(Assign a game to this slot)</span>
-                            <span *ngIf="game != null">{{ game?.categoryName }} - {{ game?.teams?.join(' VS ') }}</span>
-                        </mat-card>
+                        <div class="scheduled-game-card">
+                            <ng-container *ngIf="!game">
+                                <span class="game-empty">
+                                    {{ getTimeForIndex(idx) }} (Assign a game to this slot)
+                                </span>
+                            </ng-container>
+
+                            <ng-container *ngIf="game">
+                                <span class="game-info">
+                                    {{ getTimeForIndex(idx) }}   <br> {{ game.categoryName }}
+                                </span>
+                                <span class="game-info-teams">
+                                   
+                                    {{ game.teams[0] }}<br>
+                                    {{ game.teams[1] }}<br>
+                                    {{ game.teams[2] }}<br>
+                                </span>
+                            </ng-container>
+
+
+
+
+                            <!-- Game info on the left -->
+
+
+
+                            <!-- Referee fields on the right -->
+                            <div *ngIf="game" class="referee-fields">
+                                <input type="text" [(ngModel)]="game.referees[0]" placeholder="Head referee"
+                                    class="referee-input" />
+                                <input type="text" [(ngModel)]="game.referees[1]" placeholder="Assistant referee"
+                                    class="referee-input" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

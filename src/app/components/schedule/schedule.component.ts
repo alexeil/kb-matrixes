@@ -97,7 +97,8 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
           categoryName: cat.name,
           teams: [String(row[1]), String(row[2]), String(row[3])],
           originalCategoryIndex: catIdx,
-          originalGameIndex: gameIdx
+          originalGameIndex: gameIdx,
+          referees: ['', '']
         });
       });
     });

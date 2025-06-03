@@ -3,4 +3,5 @@ export class ScheduledGame {
   teams!: string[];
   originalCategoryIndex!: number;
   originalGameIndex!: number;
+  referees: [string, string] = ['', ''];
 }

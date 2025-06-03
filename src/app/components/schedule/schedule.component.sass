@@ -1,43 +1,54 @@
-.schedule-list
-    border: 1px solid #ccc
-    padding: 10px
-
-.schedule-row
-    padding: 10px
-    border-bottom: 1px solid #eee
-    cursor: move /* Change cursor to indicate draggable */
-
-    &:last-child
-        border-bottom: none
-
-.time
-    font-weight: bold
-
-.cdk-drag-preview
-    background-color: #f0f0f0
-    border: 1px solid #ccc
-
-.cdk-drag-placeholder
-    opacity: 0.5
-
-.cdk-drag-animating
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1)
-
 .schedule-dnd-container
     display: flex
-    gap: 32px
 
-.unassigned-games, .scheduled-games-field
-    min-width: 250px
-    max-width: 300px
+.fields-container
+    display: flex
+
+.scheduled-games-field, .unassigned-games
+    min-width: 350px
     border: 5px solid #ccc
     margin: 20px
 
-.schedule-table
-    min-width: 400px
+.schedule-slot
+  // Add slot-specific styles here if needed
 
-.drag-over-slot 
-  outline: 2px dashedrgb(220, 14, 14)
-  background: #e3f2fd
-  transition: background 0.2s, outline 0.2s
+.scheduled-game-card
+    margin-bottom: 8px
+    min-height: 48px
+    display: flex
+    align-items: center
+    background: #fff
+    border-radius: 8px
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07)
+    padding: 8px 12px
 
+.game-time
+    width: 50px
+    color: #888
+
+.game-info
+    width: 80px
+    color: #888
+
+.game-info
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    text-align: center
+
+.game-empty
+    color: #aaa
+
+.referee-fields
+    display: flex
+    flex-direction: column
+    gap: 6px
+    margin-left: auto
+    align-items: flex-end
+
+.referee-input
+    width: 120px
+    padding: 4px
+    border-radius: 4px
+    border: 1px solid #ccc
