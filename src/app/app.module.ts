@@ -18,6 +18,9 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTableModule } from '@angular/material/table';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {MatTimepickerModule} from '@angular/material/timepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
     declarations: [
@@ -40,7 +43,9 @@ import { MatTabsModule } from '@angular/material/tabs';
         MatGridListModule,
         MatTableModule,
         DragDropModule,
-        MatTabsModule
+        MatTabsModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ],
     providers: [
         provideAnimationsAsync()

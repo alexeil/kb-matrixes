@@ -3,6 +3,7 @@ import { CategoryStateService } from '../../services/category-state.service';
 import { Subscription } from 'rxjs';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { ScheduleConfigService } from '../../services/schedule-config.service';
 @Component({
   selector: 'app-ranking',
   templateUrl: './ranking.component.html',
@@ -16,15 +17,23 @@ export class RankingComponent implements OnInit, OnDestroy {
 
   teams: string[] = [];
   categoryName: string = '';
+  date: string = '';
+  location: string = '';
   private sub!: Subscription;
 
-  constructor(private catState: CategoryStateService) { }
+  constructor(private catState: CategoryStateService, private scheduleConfig: ScheduleConfigService) { }
 
   ngOnInit() {
     this.sub = this.catState.categories$.subscribe(categories => {
       const cat = categories[this.catIndex];
       this.teams = cat ? cat.teams : [];
       this.categoryName = cat ? cat.name : '';
+    });
+    this.sub = this.scheduleConfig.scheduleDate$.subscribe(scheduleDate => {
+      this.date = scheduleDate;
+    });
+    this.sub = this.scheduleConfig.location$.subscribe(location => {
+      this.location = location;
     });
   }
 

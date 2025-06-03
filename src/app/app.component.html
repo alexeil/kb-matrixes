@@ -3,13 +3,15 @@
 <div style="display: flex; align-items: center; gap: 24px;">
   <mat-form-field appearance="outline">
     <mat-label>Location</mat-label>
-    <input matInput type="text" [(ngModel)]="tournamentLocation" placeholder="Enter city name" />
+    <input matInput type="text" [ngModel]="scheduleConfig.location" (ngModelChange)="scheduleConfig.setLocation($event)" placeholder="Enter city name" />
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>Date</mat-label>
-    <input matInput type="date" [ngModel]="scheduleConfig.scheduleDate"
+    <input matInput [matDatepicker]="picker" [ngModel]="scheduleConfig.scheduleDate"
       (ngModelChange)="scheduleConfig.setScheduleDate($event)" placeholder="Select date" />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
