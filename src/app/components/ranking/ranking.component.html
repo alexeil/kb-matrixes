@@ -1,37 +1,46 @@
-<h2> {{ categoryName }} - Ranking table</h2>
+<mat-accordion>
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h2>{{ categoryName }} - Ranking table</h2>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
 
-<button mat-raised-button color="accent" (click)="printRanking()" class="print-button">Print to PDF</button>
+    <button mat-raised-button color="accent" (click)="printRanking()" class="print-button">Print to PDF</button>
 
-@if (teams.length > 0) {
-  <div class="ranking-grid" #rankingTable>
-    <div class="grid-header" style="grid-column: 1; grid-row: 1 / span 3;">#</div>
-    <div class="grid-header" style="grid-column: 2; grid-row: 1 / span 3;">Team</div>
-    <div class="grid-header" style="grid-column: 3 / span 9; grid-row: 1;">
-      {{ (location ? ('Location: ' + location + ' - ') : '') + (date ? ('Date: ' + date) : 'Date not set') }}
-    </div>
-    <div class="grid-header" style="grid-column: 12; grid-row: 1 / span 3;">Total Matches</div>
-    <div class="grid-header" style="grid-column: 13; grid-row: 1 / span 3;">Rank</div>
+    @if (teams.length > 0) {
+    <div class="ranking-grid" #rankingTable>
+      <div class="grid-header" style="grid-column: 1; grid-row: 1 / span 3;">#</div>
+      <div class="grid-header" style="grid-column: 2; grid-row: 1 / span 3;">Team</div>
+      <div class="grid-header" style="grid-column: 3 / span 9; grid-row: 1;">
+        {{ location + " - " + (date | date:'dd-MM-yyyy') + " - " + categoryName}}
+      </div>
+      <div class="grid-header" style="grid-column: 12; grid-row: 1 / span 3;">Total Matches</div>
+      <div class="grid-header" style="grid-column: 13; grid-row: 1 / span 3;">Rank</div>
 
-    @for (match of [1, 2, 3]; track m; let m = $index) {
-      <div class="grid-header" [style.grid-column]="3 + (m * 3)" [style.grid-row]="2" [style.grid-column-end]="'span 3'">
+      @for (match of [1, 2, 3]; track m; let m = $index) {
+      <div class="grid-header" [style.grid-column]="3 + (m * 3)" [style.grid-row]="2"
+        [style.grid-column-end]="'span 3'">
         Match #{{ match }}
       </div>
-    }
-    @for (match of [1, 2, 3]; track m; let m = $index) {
+      }
+      @for (match of [1, 2, 3]; track m; let m = $index) {
       <div class="grid-header" [style.grid-column]="3 + (m * 3)" [style.grid-row]="3">Sets</div>
       <div class="grid-header" [style.grid-column]="4 + (m * 3)" [style.grid-row]="3">Fairplay</div>
       <div class="grid-header" [style.grid-column]="5 + (m * 3)" [style.grid-row]="3">Total</div>
-    }
-    @for (team of teams; track i; let i = $index) {
+      }
+      @for (team of teams; track i; let i = $index) {
       <div class="grid-cell" [style.grid-column]="1" [style.grid-row]="i + 4">{{ i + 1 }}</div>
       <div class="grid-cell" [style.grid-column]="2" [style.grid-row]="i + 4">{{ team }}</div>
       @for (match of [1, 2, 3]; track m; let m = $index) {
-        <div class="grid-cell" [style.grid-column]="3 + (m * 3)" [style.grid-row]="i + 4"></div>
-        <div class="grid-cell" [style.grid-column]="4 + (m * 3)" [style.grid-row]="i + 4"></div>
-        <div class="grid-cell" [style.grid-column]="5 + (m * 3)" [style.grid-row]="i + 4"></div>
+      <div class="grid-cell" [style.grid-column]="3 + (m * 3)" [style.grid-row]="i + 4"></div>
+      <div class="grid-cell" [style.grid-column]="4 + (m * 3)" [style.grid-row]="i + 4"></div>
+      <div class="grid-cell" [style.grid-column]="5 + (m * 3)" [style.grid-row]="i + 4"></div>
       }
       <div class="grid-cell" [style.grid-column]="12" [style.grid-row]="i + 4"></div>
       <div class="grid-cell" [style.grid-column]="13" [style.grid-row]="i + 4"></div>
+      }
+    </div>
+
     }
-  </div>
-}
+  </mat-expansion-panel>

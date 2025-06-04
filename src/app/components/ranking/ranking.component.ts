@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatExpansionModule } from '@angular/material/expansion';
 @Component({
   selector: 'app-ranking',
   standalone: true,
@@ -20,6 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatTableModule,
     MatButtonModule,
     MatInputModule,
+    MatExpansionModule
   ]
 })
 export class RankingComponent implements OnInit, OnDestroy {

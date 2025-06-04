@@ -82,13 +82,17 @@
 
   <mat-tab label="Let's print it!">
     @for (cat of categories; track i; let i = $index) {
-      <app-ranking [lang]="lang" [catIndex]="i"></app-ranking>
+      <div class="app-ranking-container">
+        <app-ranking [catIndex]="i"></app-ranking>
+      </div>
     }
+
     <ng-container *ngIf="scheduledGames$ | async as scheduledGames">
       @for (field of scheduledGames; track fieldIdx; let fieldIdx = $index) {
         <app-game-sheet [catIndex]="1" [fieldNumber]="fieldIdx + 1" [games]="field"></app-game-sheet>
       }
     </ng-container>
+
     <app-game-sheet [catIndex]="1"></app-game-sheet>
   </mat-tab>
 </mat-tab-group>

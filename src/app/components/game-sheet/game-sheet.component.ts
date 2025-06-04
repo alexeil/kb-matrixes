@@ -28,11 +28,6 @@ export class GameSheetComponent {
 
   @ViewChild('gameSheets') gameSheets!: ElementRef;
 
-  private sub!: Subscription;
-
-  constructor(private catState: CategoryStateService) { }
-
-
   printGameSheets() {
     const element = this.gameSheets.nativeElement;
     html2canvas(element).then(canvas => {
