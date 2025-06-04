@@ -3,10 +3,12 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ScheduleConfigService {
-  private scheduleStartSubject = new BehaviorSubject<string>('10:00');
+  private scheduleStartSubject = new BehaviorSubject<Date>(
+    (() => { const d = new Date(); d.setHours(10, 0, 0, 0); return d; })()
+  );
   private scheduleIntervalSubject = new BehaviorSubject<number>(45);
   private fieldsSubject = new BehaviorSubject<number>(1);
-  private scheduleDateSubject = new BehaviorSubject<string>('');
+  private scheduleDateSubject = new BehaviorSubject<string>(new Date().toISOString());
   private numberOfSetsSubject = new BehaviorSubject<number>(3);
   private locationSubject = new BehaviorSubject<string>('');
 
@@ -36,7 +38,7 @@ export class ScheduleConfigService {
     return this.locationSubject.value;
   }
 
-  setScheduleStart(val: string) {
+  setScheduleStart(val: Date) {
     this.scheduleStartSubject.next(val);
   }
   setScheduleInterval(val: number) {

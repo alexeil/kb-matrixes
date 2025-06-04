@@ -30,13 +30,14 @@ import { MatButtonModule } from '@angular/material/button';
   ],
 })
 export class ScheduleComponent implements OnInit, AfterViewInit {
-  categories: Category[] = [];
-  scheduledGames: (ScheduledGame | null)[][] = [];
-  unassignedGames: ScheduledGame[] = [];
+  categories!: Category[];
+  scheduleStart!: Date;
+  scheduleInterval!: number;
+  fields!: number;
+  scheduledGames!: (ScheduledGame | null)[][];
+  unassignedGames!: ScheduledGame[];
+
   dragOverIndex: number | null = null;
-  scheduleStart: string = '10:00';
-  scheduleInterval: number = 45;
-  fields: number = 1;
   initialized: boolean = false;
 
   @ViewChildren('slotDropList') slotDropLists!: QueryList<CdkDropList>;
@@ -85,8 +86,8 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
   }
 
   private categoriesAreDifferent(a: Category[], b: Category[]): boolean {
-  return JSON.stringify(a) !== JSON.stringify(b);
-}
+    return JSON.stringify(a) !== JSON.stringify(b);
+  }
 
   ngAfterViewInit() {
     // Needed for [cdkDropListConnectedTo]
@@ -123,11 +124,10 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
   }
 
   getTimeForIndex(index: number): string {
-    let [hour, minute] = this.scheduleStart.split(':').map(Number);
-    let totalMinutes = hour * 60 + minute + index * this.scheduleInterval;
-    let h = Math.floor(totalMinutes / 60);
-    let m = totalMinutes % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    let hours = this.scheduleStart.getHours();
+    let minutes = this.scheduleStart.getMinutes();
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   }
 
   // Helper to generate drop list ids for each field

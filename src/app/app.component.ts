@@ -17,6 +17,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatTimepickerModule } from '@angular/material/timepicker';
 import { TeamInputComponent } from './components/team-input/team-input.component';
 import { MatrixComponent } from './components/matrix/matrix.component';
 import { GameSheetComponent } from './components/game-sheet/game-sheet.component';
@@ -41,6 +42,7 @@ import { ScheduleComponent } from './components/schedule/schedule.component';
     MatTabsModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatTimepickerModule,
     TeamInputComponent,
     MatrixComponent,
     GameSheetComponent,
@@ -59,7 +61,7 @@ export class AppComponent {
   teamLabels = ['M', 'B', 'Č'];
   tournamentLocation: string = '';
 
-  scheduledGames$ = this.scheduleState.scheduledGames$; // Observable<(ScheduledGame | null)[][]>
+  scheduledGames$ = this.scheduleState.scheduledGames$;
 
   isDarkTheme = false;
 

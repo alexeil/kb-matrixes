@@ -20,8 +20,10 @@
 
   <mat-form-field appearance="outline">
     <mat-label>Start Time</mat-label>
-    <input matInput type="time" [ngModel]="scheduleConfig.scheduleStart"
-      (ngModelChange)="scheduleConfig.setScheduleStart($event)" />
+    <input matInput [matTimepicker]="startTimePicker" [ngModel]="scheduleConfig.scheduleStart"
+      (ngModelChange)="scheduleConfig.setScheduleStart($event)" placeholder="Select time" />
+    <mat-timepicker-toggle matSuffix [for]="startTimePicker"></mat-timepicker-toggle>
+    <mat-timepicker #startTimePicker></mat-timepicker>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
