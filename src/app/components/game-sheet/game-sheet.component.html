@@ -4,7 +4,7 @@
     <button mat-raised-button color="accent" (click)="printGameSheets()">Print to PDF</button>
 
     <div #gameSheets class="game-sheets-container">
-        @for (match of games; track match; let idx = $index) {
+        @for (match of games; track idx; let idx = $index) {
             @if (match?.teams) {
                 <div  style="border: 1px solid #ccc; margin: 10px;">
                 <h3>Game #{{ idx +1 }}</h3>
@@ -20,7 +20,7 @@
                         <div class="grid-header set-header">{{ set }}</div>
                     }
 
-                    @for (color of teamLabels; track color; let i = $index) {
+                    @for (color of teamLabels; track i; let i = $index) {
                         <div class="grid-cell team-color">{{ color }}</div>
                         <div class="grid-cell team-name">{{ match?.teams?.[i] }}</div>
                         <div class="grid-cell"></div>

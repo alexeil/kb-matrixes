@@ -12,7 +12,7 @@ import { CategoryStateService } from '../../services/category-state.service';
   selector: 'app-team-input',
   standalone: true,
   templateUrl: './team-input.component.html',
-  styleUrls: ['./team-input.component.sass'],
+  styleUrls: ['./team-input.component.scss'],
   imports: [
     CommonModule,
     FormsModule,

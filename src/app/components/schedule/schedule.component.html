@@ -11,7 +11,7 @@
         [cdkDropListData]="unassignedGames" [cdkDropListConnectedTo]="dropListIds"
         (cdkDropListDropped)="dropToUnassigned($event)">
         <h3>Unassigned Games</h3>
-        @for (game of unassignedGames; track game) {
+        @for (game of unassignedGames; track gameIdx; let gameIdx = $index) {
             <div cdkDrag>
                 <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
                     {{game?.categoryName}} - {{game?.teams?.join(' VS ')}}
@@ -22,10 +22,10 @@
 
     <!-- Schedule lists for each field -->
     <div class="fields-container">
-        @for (field of scheduledGames; track field; let fieldIdx = $index) {
+        @for (field of scheduledGames; track fieldIdx; let fieldIdx = $index) {
           <div class="scheduled-games-field">
               <h3>Field {{ fieldIdx + 1 }}</h3>
-              @for (game of field; track game; let idx = $index) {
+              @for (game of field; track idx; let idx = $index) {
                   <div class="schedule-slot">
                       <div cdkDropList [id]="'field-' + fieldIdx + '-slot-' + idx"
                           [cdkDropListData]="{ fieldIdx: fieldIdx, slotIdx: idx }" [cdkDropListConnectedTo]="dropListIds"

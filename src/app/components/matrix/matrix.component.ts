@@ -20,7 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatButtonModule
   ],
   templateUrl: './matrix.component.html',
-  styleUrls: ['./matrix.component.sass']
+  styleUrls: ['./matrix.component.scss']
 })
 export class MatrixComponent implements OnInit, OnChanges {
   @Input() teams: string[] = [];

@@ -6,15 +6,17 @@ import jsPDF from 'jspdf';
 import { ScheduledGame } from '../../models/scheduled-game';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-game-sheet',
   standalone: true,
   templateUrl: './game-sheet.component.html',
-  styleUrls: ['./game-sheet.component.sass'],
+  styleUrls: ['./game-sheet.component.scss'],
   imports: [
     CommonModule,
     MatCardModule,
+    MatButtonModule
   ]
 })
 export class GameSheetComponent {

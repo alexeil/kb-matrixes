@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-ranking',
   standalone: true,
   templateUrl: './ranking.component.html',
-  styleUrls: ['./ranking.component.sass'],
+  styleUrls: ['./ranking.component.scss'],
   imports: [
     CommonModule,
     MatCardModule,

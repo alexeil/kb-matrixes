@@ -18,7 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-schedule',
   standalone: true,
   templateUrl: './schedule.component.html',
-  styleUrls: ['./schedule.component.sass'],
+  styleUrls: ['./schedule.component.scss'],
   imports: [
     CommonModule,
     FormsModule,

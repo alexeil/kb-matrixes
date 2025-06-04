@@ -48,7 +48,7 @@ import { ScheduleComponent } from './components/schedule/schedule.component';
     ScheduleComponent
   ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.sass']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   categories: Category[] = [];
@@ -61,6 +61,7 @@ export class AppComponent {
 
   scheduledGames$ = this.scheduleState.scheduledGames$; // Observable<(ScheduledGame | null)[][]>
 
+  isDarkTheme = false;
 
   constructor(
     public catState: CategoryStateService,
@@ -232,6 +233,16 @@ export class AppComponent {
       this.selectedCategoryIndex = 0;
     } catch (e) {
       alert('Failed to import setup.');
+    }
+  }
+
+  toggleTheme() {
+    this.isDarkTheme = !this.isDarkTheme;
+    const body = document.documentElement;
+    if (this.isDarkTheme) {
+      body.classList.add('dark-theme');
+    } else {
+      body.classList.remove('dark-theme');
     }
   }
 }

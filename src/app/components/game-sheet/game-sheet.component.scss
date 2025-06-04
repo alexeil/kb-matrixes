@@ -1,0 +1,37 @@
+.game-sheets-container {
+    max-width: 871px;
+}
+
+.game-sheet-grid {
+    display: grid;
+    margin-bottom: 2em;
+    grid-template-columns: 50px 150px 50px 50px 50px 50px 50px 50px 100px 100px 100px;
+}
+
+.grid-header {
+    font-weight: bold;
+    text-align: center;
+    padding: 0.5em;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    display: flex; /* Use flexbox for vertical alignment */
+    align-items: center; /* Vertically center the content */
+    justify-content: center; /* Keep horizontal center */
+}
+
+.set-header {
+    grid-row: 2; /* Sets are in the second row */
+}
+
+.grid-cell {
+    padding: 0.5em;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.team-color {
+    font-weight: bold;
+}
+
+.team-name {
+    text-align: left;
+}

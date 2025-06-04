@@ -1,5 +1,9 @@
 <h2>Tournament details</h2>
 
+<button mat-raised-button (click)="toggleTheme()" style="margin-bottom: 16px;">
+  Toggle {{ isDarkTheme ? 'Light' : 'Dark' }} Mode
+</button>
+
 <div style="display: flex; align-items: center; gap: 24px;">
   <mat-form-field appearance="outline">
     <mat-label>Location</mat-label>
@@ -49,7 +53,7 @@
   <!-- Teams/Matrix/Game Sheets Tab -->
   <mat-tab label="Register Teams & select Matrix">
     <mat-tab-group [(selectedIndex)]="selectedCategoryIndex">
-      @for (cat of categories; track cat; let i = $index) {
+      @for (cat of categories; track i; let i = $index) {
         <mat-tab>
           <ng-template mat-tab-label>
             <input [(ngModel)]="cat.name"
@@ -75,11 +79,11 @@
   </mat-tab>
 
   <mat-tab label="Let's print it!">
-    @for (cat of categories; track cat; let i = $index) {
+    @for (cat of categories; track i; let i = $index) {
       <app-ranking [lang]="lang" [catIndex]="i"></app-ranking>
     }
     <ng-container *ngIf="scheduledGames$ | async as scheduledGames">
-      @for (field of scheduledGames; track field; let fieldIdx = $index) {
+      @for (field of scheduledGames; track fieldIdx; let fieldIdx = $index) {
         <app-game-sheet [catIndex]="1" [fieldNumber]="fieldIdx + 1" [games]="field"></app-game-sheet>
       }
     </ng-container>
