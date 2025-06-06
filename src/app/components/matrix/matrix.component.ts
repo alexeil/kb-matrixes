@@ -25,7 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class MatrixComponent implements OnInit, OnChanges {
   @Input() teams: string[] = [];
   @Input() catIndex!: number;
-  numberOfFields: number = 1;
+  numberOfFields = 1;
   displayMatrix: (string | number)[][] = [];
 
   constructor(private catState: CategoryStateService) { }

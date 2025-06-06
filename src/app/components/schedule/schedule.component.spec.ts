@@ -87,7 +87,7 @@ describe('ScheduleComponent', () => {
       expect(component.scheduledGames[1].length).toBe(3);
 
       // Drag first game to the second slot of the first field
-      let event1 = {
+      const event1 = {
         previousContainer: { data: { fieldIdx: null, slotIdx: null }, id: 'unassignedGamesList' },
         container: { data: { fieldIdx: 0, slotIdx: 1 }, id: 'field-0-slot-1' },
         previousIndex: 0,
@@ -100,7 +100,7 @@ describe('ScheduleComponent', () => {
       expect(component.unassignedGames.length).toBe(2);
 
       // Drag second game (now at index 0) to the last slot of the second field
-      let event2 = {
+      const event2 = {
         previousContainer: { data: { fieldIdx: null, slotIdx: null }, id: 'unassignedGamesList' },
         container: { data: { fieldIdx: 1, slotIdx: 2 }, id: 'field-1-slot-2' },
         previousIndex: 0,
@@ -113,7 +113,7 @@ describe('ScheduleComponent', () => {
       expect(component.unassignedGames.length).toBe(1);
 
       // Drag third game (now at index 0) to the first slot of the first field
-      let event3 = {
+      const event3 = {
         previousContainer: { data: { fieldIdx: null, slotIdx: null }, id: 'unassignedGamesList' },
         container: { data: { fieldIdx: 0, slotIdx: 0 }, id: 'field-0-slot-0' },
         previousIndex: 0,

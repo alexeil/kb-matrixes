@@ -25,15 +25,15 @@ import { MatExpansionModule } from '@angular/material/expansion';
   ]
 })
 export class RankingComponent implements OnInit, OnDestroy {
-  @Input() lang: string = 'en';
+  @Input() lang = 'en';
   @Input() catIndex!: number;
 
   @ViewChild('rankingTable') rankingTable!: ElementRef;
 
   teams: string[] = [];
-  categoryName: string = '';
-  date: string = '';
-  location: string = '';
+  categoryName = '';
+  date = '';
+  location = '';
   private sub!: Subscription;
 
   constructor(private catState: CategoryStateService, private scheduleConfig: ScheduleConfigService) { }

@@ -59,7 +59,7 @@ export class AppComponent {
 
   lang: 'en' | 'cz' = 'en';
   teamLabels = ['M', 'B', 'Č'];
-  tournamentLocation: string = '';
+  tournamentLocation = '';
 
   scheduledGames$ = this.scheduleState.scheduledGames$;
 

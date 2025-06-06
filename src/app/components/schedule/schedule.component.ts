@@ -38,7 +38,7 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
   unassignedGames!: ScheduledGame[];
 
   dragOverIndex: number | null = null;
-  initialized: boolean = false;
+  initialized = false;
 
   @ViewChildren('slotDropList') slotDropLists!: QueryList<CdkDropList>;
 
@@ -124,8 +124,8 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
   }
 
   getTimeForIndex(index: number): string {
-    let hours = this.scheduleStart.getHours();
-    let minutes = this.scheduleStart.getMinutes();
+    const hours = this.scheduleStart.getHours();
+    const minutes = this.scheduleStart.getMinutes();
 
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   }
@@ -258,7 +258,7 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
     });
 
     // Prepare assignment
-    let fieldAssignments: ScheduledGame[][] = Array(numFields).fill(null).map(() => []);
+    const fieldAssignments: ScheduledGame[][] = Array(numFields).fill(null).map(() => []);
     if (numFields === 1) {
       // All games in order
       fieldAssignments[0] = allGames.slice();
