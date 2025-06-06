@@ -8,7 +8,7 @@
 
     <!-- Unassigned games list -->
     <div class="unassigned-games" cdkDropList [id]="'unassignedGamesList'" #unassignedGamesList="cdkDropList"
-        [cdkDropListData]="unassignedGames" [cdkDropListConnectedTo]="dropListIds"
+        [cdkDropListData]="{ fieldIdx: -1, slotIdx: -1 }" [cdkDropListConnectedTo]="dropListIds"
         (cdkDropListDropped)="dropToUnassigned($event)">
         <h3>Unassigned Games</h3>
         @for (game of unassignedGames; track gameIdx; let gameIdx = $index) {
@@ -35,12 +35,12 @@
                               <div class="scheduled-game-card">
                                   @if (!game) {
                                       <span class="game-empty">
-                                          {{ getTimeForIndex(idx) }} (Assign a game to this slot)
+                                          {{ getTimeForIndex() }} (Assign a game to this slot)
                                       </span>
                                   }
                                   @if (game) {
                                       <span class="game-info">
-                                          {{ getTimeForIndex(idx) }}   <br> {{ game.categoryName }}
+                                          {{ getTimeForIndex() }}   <br> {{ game.categoryName }}
                                       </span>
                                       <span class="game-info-teams">
                                         {{ game.teams[0] }}<br>
