@@ -1,12 +1,11 @@
 import { Component, Input, ViewChild, ElementRef } from '@angular/core';
-import { CategoryStateService } from '../../services/category-state.service';
-import { Subscription } from 'rxjs';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { ScheduledGame } from '../../models/scheduled-game';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-game-sheet',
@@ -16,15 +15,19 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [
     CommonModule,
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    MatExpansionModule
   ]
 })
 export class GameSheetComponent {
   @Input() catIndex!: number;
   @Input() fieldNumber!: number;
-  @Input() games!: (ScheduledGame | null) [];
+  @Input() games!: (ScheduledGame | null)[];
+  @Input() numberOfSets!: number;
+
   teamLabels = ['Blue', 'Gray', 'Black'];
-  setNumber = 5;
+
+
 
   @ViewChild('gameSheets') gameSheets!: ElementRef;
 

@@ -12,7 +12,7 @@ html {
 html.dark-theme {
   color-scheme: dark;
   @include mat.theme((
-    color: mat.$cyan-palette,
+    color: mat.$violet-palette,
     typography: Roboto,
     density: 0,
     dark: true
