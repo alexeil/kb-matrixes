@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CategoryStateService } from './services/category-state.service';
 import { ScheduleStateService } from './services/schedule-state.service';
 import { ScheduleConfigService } from './services/schedule-config.service';
@@ -23,6 +23,8 @@ import { MatrixComponent } from './components/matrix/matrix.component';
 import { GameSheetComponent } from './components/game-sheet/game-sheet.component';
 import { RankingComponent } from './components/ranking/ranking.component';
 import { ScheduleComponent } from './components/schedule/schedule.component';
+import { Observable } from 'rxjs';
+import { ScheduledGame } from './models/scheduled-game';
 
 @Component({
   selector: 'app-root',
@@ -52,7 +54,7 @@ import { ScheduleComponent } from './components/schedule/schedule.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   categories: Category[] = [];
   selectedCategoryIndex = 0;
   mainTabIndex = 0;
@@ -61,15 +63,16 @@ export class AppComponent {
   teamLabels = ['M', 'B', 'Č'];
   tournamentLocation = '';
 
-  scheduledGames$ = this.scheduleState.scheduledGames$;
+  scheduledGames$!: Observable<(ScheduledGame | null)[][]>;
 
   isDarkTheme = false;
 
-  constructor(
-    public catState: CategoryStateService,
-    private scheduleState: ScheduleStateService,
-    public scheduleConfig: ScheduleConfigService
-  ) {
+  catState = inject(CategoryStateService);
+  scheduleState = inject(ScheduleStateService);
+  scheduleConfig = inject(ScheduleConfigService);
+
+  ngOnInit() {
+    this.scheduledGames$ = this.scheduleState.scheduledGames$;
     let previousLength = 0;
     this.catState.categories$.subscribe(cats => {
       // If a category was added, select the last one
@@ -104,7 +107,7 @@ export class AppComponent {
         if (state.unassignedGames) this.scheduleState.setUnassignedGames(state.unassignedGames);
 
         console.log('Setup loaded from shared URL!');
-      } catch (e) {
+      } catch {
         console.error('Failed to load from shared URL.');
       }
     }
@@ -233,7 +236,7 @@ export class AppComponent {
       const categories = JSON.parse(decoded);
       this.catState.setCategories(categories);
       this.selectedCategoryIndex = 0;
-    } catch (e) {
+    } catch {
       alert('Failed to import setup.');
     }
   }

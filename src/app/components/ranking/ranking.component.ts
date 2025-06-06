@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef, inject } from '@angular/core';
 import { CategoryStateService } from '../../services/category-state.service';
 import { Subscription } from 'rxjs';
 import jsPDF from 'jspdf';
@@ -36,7 +36,8 @@ export class RankingComponent implements OnInit, OnDestroy {
   location = '';
   private sub!: Subscription;
 
-  constructor(private catState: CategoryStateService, private scheduleConfig: ScheduleConfigService) { }
+  catState = inject(CategoryStateService);
+  scheduleConfig = inject(ScheduleConfigService);
 
   ngOnInit() {
     this.sub = this.catState.categories$.subscribe(categories => {

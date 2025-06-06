@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CategoryStateService } from '../../services/category-state.service';
 import { MATCH_MATRICES } from '../../utils/matrixes.data';
@@ -28,7 +28,7 @@ export class MatrixComponent implements OnInit, OnChanges {
   numberOfFields = 1;
   displayMatrix: (string | number)[][] = [];
 
-  constructor(private catState: CategoryStateService) { }
+  catState = inject(CategoryStateService);
 
   ngOnInit() {
     const cat = this.catState.categories[this.catIndex];

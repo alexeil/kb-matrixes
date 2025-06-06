@@ -89,11 +89,11 @@ describe('AppComponent', () => {
       read: () => Promise.resolve(),
       readText: () => Promise.resolve(''),
       write: () => Promise.resolve(),
-      addEventListener: () => {},
-      removeEventListener: () => {},
+      addEventListener: () => { /* intentionally empty */ },
+      removeEventListener() { /* intentionally empty */ }, // intentionally empty
       dispatchEvent: () => true
     };
-    spyOnProperty(navigator, 'clipboard', 'get').and.returnValue(fakeClipboard as any);
+    spyOnProperty(navigator, 'clipboard', 'get').and.returnValue(fakeClipboard as unknown as Clipboard);
     spyOn(app, 'btoaUnicode').and.callThrough();
     app.copyShareUrl();
     expect(app.btoaUnicode).toHaveBeenCalled();
@@ -145,7 +145,7 @@ describe('AppComponent', () => {
     const fakeClipboard = {
       writeText: () => { throw new Error('fail'); }
     };
-    spyOnProperty(navigator, 'clipboard', 'get').and.returnValue(fakeClipboard as any);
+    spyOnProperty(navigator, 'clipboard', 'get').and.returnValue(fakeClipboard as unknown as Clipboard);
     // Should not throw, but should log error
     spyOn(console, 'error');
     expect(() => app.copyShareUrl()).not.toThrow();

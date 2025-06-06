@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -54,12 +54,15 @@ describe('ScheduleComponent', () => {
       expect(component.unassignedGames.length).toBe(2);
 
       // Simulate assigning the first unassigned game to the first slot of field 0
-      const event = {
-        previousContainer: { data: { fieldIdx: null, slotIdx: null }, id: 'unassignedGamesList' },
-        container: { data: { fieldIdx: 0, slotIdx: 0 }, id: 'field-0-slot-0' },
+      const event: CdkDragDrop<{ fieldIdx: number; slotIdx: number; }, { fieldIdx: number; slotIdx: number; }, unknown> = {
+        previousContainer: { data: { fieldIdx: 0, slotIdx: 0 }, id: 'unassignedGamesList' } as unknown as CdkDropList<{ fieldIdx: number; slotIdx: number; }>,
+        container: { data: { fieldIdx: 0, slotIdx: 0 }, id: 'field-0-slot-0' } as unknown as CdkDropList<{ fieldIdx: number; slotIdx: number; }>,
         previousIndex: 0,
-        currentIndex: 0
-      } as any;
+        currentIndex: 0,
+        item: null as unknown,
+        isPointerOverContainer: false,
+        distance: { x: 0, y: 0 }
+      } as unknown as CdkDragDrop<{ fieldIdx: number; slotIdx: number; }, { fieldIdx: number; slotIdx: number; }, unknown>;
       expect(() => component.dropToSchedule(event)).not.toThrow();
       fixture.detectChanges();
       expect(component.scheduledGames[0][0]).toBeTruthy();
@@ -87,12 +90,15 @@ describe('ScheduleComponent', () => {
       expect(component.scheduledGames[1].length).toBe(3);
 
       // Drag first game to the second slot of the first field
-      const event1 = {
-        previousContainer: { data: { fieldIdx: null, slotIdx: null }, id: 'unassignedGamesList' },
-        container: { data: { fieldIdx: 0, slotIdx: 1 }, id: 'field-0-slot-1' },
+      const event1: CdkDragDrop<{ fieldIdx: number; slotIdx: number; }, { fieldIdx: number; slotIdx: number; }, unknown> = {
+        previousContainer: { data: { fieldIdx: 0, slotIdx: 0 }, id: 'unassignedGamesList' } as unknown as CdkDropList<{ fieldIdx: number; slotIdx: number; }>,
+        container: { data: { fieldIdx: 0, slotIdx: 1 }, id: 'field-0-slot-1' } as unknown as CdkDropList<{ fieldIdx: number; slotIdx: number; }>,
         previousIndex: 0,
-        currentIndex: 1
-      } as any;
+        currentIndex: 1,
+        item: null as unknown,
+        isPointerOverContainer: false,
+        distance: { x: 0, y: 0 }
+      } as unknown as CdkDragDrop<{ fieldIdx: number; slotIdx: number; }, { fieldIdx: number; slotIdx: number; }, unknown>;
       expect(component.scheduledGames[0][1]).toBeNull();
       expect(() => component.dropToSchedule(event1)).not.toThrow();
       fixture.detectChanges();
@@ -100,12 +106,15 @@ describe('ScheduleComponent', () => {
       expect(component.unassignedGames.length).toBe(2);
 
       // Drag second game (now at index 0) to the last slot of the second field
-      const event2 = {
-        previousContainer: { data: { fieldIdx: null, slotIdx: null }, id: 'unassignedGamesList' },
-        container: { data: { fieldIdx: 1, slotIdx: 2 }, id: 'field-1-slot-2' },
+      const event2: CdkDragDrop<{ fieldIdx: number; slotIdx: number; }, { fieldIdx: number; slotIdx: number; }, unknown> = {
+        previousContainer: { data: { fieldIdx: 0, slotIdx: 0 }, id: 'unassignedGamesList' } as unknown as CdkDropList<{ fieldIdx: number; slotIdx: number; }>,
+        container: { data: { fieldIdx: 1, slotIdx: 2 }, id: 'field-1-slot-2' } as unknown as CdkDropList<{ fieldIdx: number; slotIdx: number; }>,
         previousIndex: 0,
-        currentIndex: 2
-      } as any;
+        currentIndex: 2,
+        item: null as unknown,
+        isPointerOverContainer: false,
+        distance: { x: 0, y: 0 }
+      } as unknown as CdkDragDrop<{ fieldIdx: number; slotIdx: number; }, { fieldIdx: number; slotIdx: number; }, unknown>;
       expect(component.scheduledGames[1][2]).toBeNull();
       expect(() => component.dropToSchedule(event2)).not.toThrow();
       fixture.detectChanges();
@@ -113,12 +122,15 @@ describe('ScheduleComponent', () => {
       expect(component.unassignedGames.length).toBe(1);
 
       // Drag third game (now at index 0) to the first slot of the first field
-      const event3 = {
-        previousContainer: { data: { fieldIdx: null, slotIdx: null }, id: 'unassignedGamesList' },
-        container: { data: { fieldIdx: 0, slotIdx: 0 }, id: 'field-0-slot-0' },
+      const event3: CdkDragDrop<{ fieldIdx: number; slotIdx: number; }, { fieldIdx: number; slotIdx: number; }, unknown> = {
+        previousContainer: { data: { fieldIdx: 0, slotIdx: 0 }, id: 'unassignedGamesList' } as unknown as CdkDropList<{ fieldIdx: number; slotIdx: number; }>,
+        container: { data: { fieldIdx: 0, slotIdx: 0 }, id: 'field-0-slot-0' } as unknown as CdkDropList<{ fieldIdx: number; slotIdx: number; }>,
         previousIndex: 0,
-        currentIndex: 0
-      } as any;
+        currentIndex: 0,
+        item: null as unknown,
+        isPointerOverContainer: false,
+        distance: { x: 0, y: 0 }
+      } as unknown as CdkDragDrop<{ fieldIdx: number; slotIdx: number; }, { fieldIdx: number; slotIdx: number; }, unknown>;
       expect(component.scheduledGames[0][0]).toBeNull();
       expect(() => component.dropToSchedule(event3)).not.toThrow();
       fixture.detectChanges();
@@ -126,13 +138,14 @@ describe('ScheduleComponent', () => {
       expect(component.unassignedGames.length).toBe(0);
 
       // Check that exactly three slots are filled and the rest are null
+      // Replace for-loops with for-of loops for simple iteration
       let filledCount = 0;
-      for (let i = 0; i < component.scheduledGames.length; i++) {
-        for (let j = 0; j < component.scheduledGames[i].length; j++) {
-          if (component.scheduledGames[i][j]) {
+      for (const row of component.scheduledGames) {
+        for (const slot of row) {
+          if (slot) {
             filledCount++;
           } else {
-            expect(component.scheduledGames[i][j]).toBeNull();
+            expect(slot).toBeNull();
           }
         }
       }

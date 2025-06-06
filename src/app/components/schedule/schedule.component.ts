@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChildren, QueryList, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList, ChangeDetectorRef, inject } from '@angular/core';
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { CategoryStateService } from '../../services/category-state.service';
 import { ScheduleStateService } from '../../services/schedule-state.service';
@@ -29,7 +29,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatButtonModule
   ],
 })
-export class ScheduleComponent implements OnInit, AfterViewInit {
+export class ScheduleComponent implements OnInit {
   categories!: Category[];
   scheduleStart!: Date;
   scheduleInterval!: number;
@@ -42,12 +42,10 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
 
   @ViewChildren('slotDropList') slotDropLists!: QueryList<CdkDropList>;
 
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private catState: CategoryStateService,
-    private scheduleState: ScheduleStateService,
-    private scheduleConfig: ScheduleConfigService
-  ) { }
+  cdr = inject(ChangeDetectorRef);
+  catState = inject(CategoryStateService);
+  scheduleState = inject(ScheduleStateService);
+  scheduleConfig = inject(ScheduleConfigService);
 
   ngOnInit() {
 
@@ -89,10 +87,6 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
     return JSON.stringify(a) !== JSON.stringify(b);
   }
 
-  ngAfterViewInit() {
-    // Needed for [cdkDropListConnectedTo]
-  }
-
 
   initSchedule() {
     console.log('Initializing schedule with fields:', this.fields, 'and categories:', this.categories.length);
@@ -123,7 +117,7 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
     return games;
   }
 
-  getTimeForIndex(index: number): string {
+  getTimeForIndex(): string {
     const hours = this.scheduleStart.getHours();
     const minutes = this.scheduleStart.getMinutes();
 
@@ -158,7 +152,7 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
    * - If reordering within the same field, reorder the games.
    * - If moving from another field, swap the games if both slots are occupied.
    */
-  dropToSchedule(event: CdkDragDrop<any>) {
+  dropToSchedule(event: CdkDragDrop<{ fieldIdx: number; slotIdx: number }>) {
     const fromFieldIdx = event.previousContainer.data.fieldIdx;
     const fromSlotIdx = event.previousContainer.data.slotIdx;
     const { fieldIdx, slotIdx } = event.container.data;
@@ -183,10 +177,10 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
   }
 
-  canDropIntoSlot = (drag: any, drop: any) => {
+  canDropIntoSlot = (drag: { game: ScheduledGame, slot: number, field: number }, drop: CdkDropList<{ fieldIdx: number; slotIdx: number }>) => {
     console.log('Checking if can drop into slot:', drag, drop);
     // Get slot index from drop element's data-index attribute
-    const slotIndex = +drop.element.nativeElement.getAttribute('data-index');
+    const slotIndex = +drop.element.nativeElement.getAttribute('data-index')!;
     return !this.scheduledGames[slotIndex];
   };
 
@@ -203,7 +197,9 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
   /**
    * Handles dropping a game back to the unassigned list (from a field).
    */
-  dropToUnassigned(event: CdkDragDrop<any>) {
+  dropToUnassigned(event: CdkDragDrop<{ fieldIdx: number; slotIdx: number }>) {
+    const fromFieldIdx = event.previousContainer.data.fieldIdx;
+    const fromSlotIdx = event.previousContainer.data.slotIdx;
 
     if (event.previousContainer.id === 'unassignedGamesList') {
       // Reordering case
@@ -217,8 +213,6 @@ export class ScheduleComponent implements OnInit, AfterViewInit {
       console.log(`Moved game from index ${previousIndex} to ${currentIndex} in unassigned games.`);
     } else {
       // From another field to unassigned
-      const fromFieldIdx = event.previousContainer.data.fieldIdx;
-      const fromSlotIdx = event.previousContainer.data.slotIdx;
       const fromGame = this.scheduledGames[fromFieldIdx][fromSlotIdx];
 
       if (fromGame) {

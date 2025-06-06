@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ElementRef } from '@angular/core';
 
 import { GameSheetComponent } from './game-sheet.component';
 
@@ -22,16 +23,15 @@ describe('GameSheetComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have default teamLabels and setNumber', () => {
+  it('should have default teamLabels', () => {
     expect(component.teamLabels).toEqual(['Blue', 'Gray', 'Black']);
-    expect(component.setNumber).toBe(5);
   });
 
   it('should accept @Input properties', () => {
     component.catIndex = 1;
     component.fieldNumber = 2;
     component.games = [
-      { categoryName: 'Cat', teams: ['A', 'B', 'C'], originalCategoryIndex: 0, originalGameIndex: 0 }
+      { categoryName: 'Cat', teams: ['A', 'B', 'C'], originalCategoryIndex: 0, originalGameIndex: 0, referees: ['', ''] }
     ];
     expect(component.catIndex).toBe(1);
     expect(component.fieldNumber).toBe(2);
@@ -45,9 +45,9 @@ describe('GameSheetComponent', () => {
       height: 200,
       toDataURL: () => 'data:image/png;base64,abc=='
     };
-    // @ts-ignore
+    // @ts-expect-error: Mocking global html2canvas for test
     window.html2canvas = () => Promise.resolve(mockCanvas);
-    // @ts-ignore
+    // @ts-expect-error: Mocking global jsPDF for test
     window.jsPDF = function() {
       return {
         internal: { pageSize: { getWidth: () => 400, getHeight: () => 600 } },
@@ -55,7 +55,7 @@ describe('GameSheetComponent', () => {
         save: jasmine.createSpy('save')
       };
     };
-    component.gameSheets = { nativeElement: document.createElement('div') } as any;
+    component.gameSheets = { nativeElement: document.createElement('div') } as unknown as ElementRef;
     await component.printGameSheets();
     // If no error is thrown, the test passes
     expect(true).toBeTrue();
