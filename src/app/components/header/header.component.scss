@@ -1,0 +1,37 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 16px 0;
+  border-radius: 18px;
+  border: 1.5px solid #d1d5db;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 6%);
+}
+
+.header-title {
+  margin: 0;
+  flex: 0 1 auto;
+  text-align: center;
+  width: 100%;
+  font-size: 2rem;
+}
+
+.theme-toggle-btn {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.header-spacer {
+  width: 48px; // same as button width, for symmetry
+}
+
+.sun-icon {
+  color: #FFD600;
+}
+
+.moon-icon {
+  color: #90CAF9;
+}

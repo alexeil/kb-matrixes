@@ -1,9 +1,7 @@
+<app-header [isDarkTheme]="isDarkTheme" (themeToggle)="toggleTheme()"></app-header>
+
 <div style="display: flex; justify-content: space-between; align-items: center;">
   <h2>Tournament details</h2>
-  <button mat-icon-button (click)="toggleTheme()" [attr.aria-label]="isDarkTheme ? 'Switch to light mode' : 'Switch to dark mode'">
-    <mat-icon [ngClass]="isDarkTheme ? 'moon-icon' : 'sun-icon'" >{{ isDarkTheme ? 'dark_mode' : 'light_mode' }}</mat-icon>
-  </button>
-
 </div>
 
 <div style="display: flex; align-items: center; gap: 24px;">
