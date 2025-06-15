@@ -1,4 +1,3 @@
-/* styles.sass or app.component.sass */
 .team-matrix-grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -6,7 +5,8 @@
     align-items: start;
 }
 
-.app-ranking-container, .app-game-sheet-container {
+.app-ranking-container,
+.app-game-sheet-container {
     margin-top: 20px;
 }
 
