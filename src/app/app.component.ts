@@ -102,6 +102,7 @@ export class AppComponent implements OnInit {
         this.catState.setCategories(state.categories); // Ensure service is updated for all components
         // Restore schedule config state if present
         if (state.scheduleStart) this.scheduleConfig.setScheduleStart(state.scheduleStart);
+        if (state.scheduleEnd) this.scheduleConfig.setScheduleEnd(state.scheduleEnd);
         if (state.scheduleInterval) this.scheduleConfig.setScheduleInterval(state.scheduleInterval);
         if (state.scheduleFields) this.scheduleConfig.setFields(state.scheduleFields);
         // Restore schedule state if present
@@ -185,6 +186,7 @@ export class AppComponent implements OnInit {
     const state = {
       categories: this.categories,
       scheduleStart: this.scheduleConfig.scheduleStart,
+      scheduleEnd: this.scheduleConfig.scheduleEnd,
       scheduleInterval: this.scheduleConfig.scheduleInterval,
       scheduleFields: this.scheduleConfig.fields,
       tournamentLocation: this.tournamentLocation,

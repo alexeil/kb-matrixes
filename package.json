@@ -9,9 +9,8 @@
     "test": "ng test --watch=false",
     "coverage": "ng test --watch=false --code-coverage --browsers=ChromeHeadless",
     "deployGithub": "ng build --base-href /kb-matrixes/ && npx angular-cli-ghpages --dir=dist/kb-matrixes/browser",
-    "lint": "ng lint",
-    "prepare": "husky install",
-    "stylelint": "stylelint 'src/**/*.scss'"
+    "lint": "ng lint && stylelint 'src/**/*.scss'",
+    "prepare": "husky install"
   },
   "private": true,
   "dependencies": {

@@ -7,13 +7,16 @@ export class ScheduleConfigService {
     private scheduleStartSubject = new BehaviorSubject<Date>(
         (() => { const d = new Date(); d.setHours(10, 0, 0, 0); return d; })()
     );
+    private scheduleEndSubject = new BehaviorSubject<Date>(
+        (() => { const d = new Date(); d.setHours(16, 0, 0, 0); return d; })()
+    );
     private scheduleIntervalSubject = new BehaviorSubject<number>(45);
     private fieldsSubject = new BehaviorSubject<number>(1);
     private scheduleDateSubject = new BehaviorSubject<string>(new Date().toISOString());
     private numberOfSetsSubject = new BehaviorSubject<number>(3);
 
-
     scheduleStart$ = this.scheduleStartSubject.asObservable();
+    scheduleEnd$ = this.scheduleEndSubject.asObservable();
     scheduleInterval$ = this.scheduleIntervalSubject.asObservable();
     fields$ = this.fieldsSubject.asObservable();
     scheduleDate$ = this.scheduleDateSubject.asObservable();
@@ -22,6 +25,9 @@ export class ScheduleConfigService {
 
     get scheduleStart() {
         return this.scheduleStartSubject.value;
+    }
+    get scheduleEnd() {
+        return this.scheduleEndSubject.value;
     }
     get scheduleInterval() {
         return this.scheduleIntervalSubject.value;
@@ -41,6 +47,9 @@ export class ScheduleConfigService {
 
     setScheduleStart(val: Date) {
         this.scheduleStartSubject.next(val);
+    }
+    setScheduleEnd(val: Date) {
+        this.scheduleEndSubject.next(val);
     }
     setScheduleInterval(val: number) {
         this.scheduleIntervalSubject.next(val);

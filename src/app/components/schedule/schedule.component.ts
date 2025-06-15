@@ -32,6 +32,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class ScheduleComponent implements OnInit {
   categories!: Category[];
   scheduleStart!: Date;
+  scheduleEnd!: Date;
   scheduleInterval!: number;
   fields!: number;
   scheduledGames!: (ScheduledGame | null)[][];
@@ -51,6 +52,7 @@ export class ScheduleComponent implements OnInit {
 
     combineLatest([
       this.scheduleConfig.scheduleStart$,
+      this.scheduleConfig.scheduleEnd$,
       this.scheduleConfig.scheduleInterval$,
       this.scheduleConfig.fields$,
 
@@ -59,10 +61,11 @@ export class ScheduleComponent implements OnInit {
       this.scheduleState.scheduledGames$,
       this.scheduleState.unassignedGames$
 
-    ]).subscribe(([scheduleStart, scheduleInter, fields, categories, scheduledGames, unassignedGames]) => {
+    ]).subscribe(([scheduleStart, scheduleEnd, scheduleInter, fields, categories, scheduledGames, unassignedGames]) => {
       if (!this.initialized) {
         console.log('Initializing schedule component with fields:', fields, 'and categories:', categories.length);
         this.scheduleStart = scheduleStart;
+        this.scheduleEnd = scheduleEnd;
         this.scheduleInterval = scheduleInter;
         this.categories = categories;
         this.fields = fields;
@@ -73,20 +76,20 @@ export class ScheduleComponent implements OnInit {
         }
         this.initialized = true;
       } else {
-        if (this.categoriesAreDifferent(this.categories, categories) || this.fields != fields) {
+        if (this.categoriesAreDifferent(this.categories, categories) 
+          || this.fields != fields
+          || this.scheduleStart != scheduleStart 
+          || this.scheduleInterval != scheduleInter
+          || this.scheduleEnd != scheduleEnd
+        ) {
           this.categories = categories;
           this.fields = fields;
-          this.initSchedule();
-        }
-
-        console.log('Updating schedule with new start time and interval:', this.scheduleStart, this.scheduleInterval, scheduleStart, scheduleInter);
-
-        if (this.scheduleStart != scheduleStart || this.scheduleInterval != scheduleInter) {
           this.scheduleStart = scheduleStart;
           this.scheduleInterval = scheduleInter;
-          console.log('updateAllGameStartTimes', this.scheduleStart, this.scheduleInterval);
-          this.updateAllGameStartTimes();
+          this.scheduleEnd = scheduleEnd;
+          this.initSchedule();
         }
+        //  this.updateAllGameStartTimes();
       }
     });
   }
@@ -97,16 +100,32 @@ export class ScheduleComponent implements OnInit {
 
 
   initSchedule() {
-    console.log('Initializing schedule with fields:', this.fields, 'and categories:', this.categories.length);
-    // Always update schedule when fields or categories change
+    this.initscheduledGames();
+    // Unassigned games logic remains the same
     const allGames = this.flattenGames();
     this.unassignedGames = [...allGames];
-    // Create an array for each field
+
+    this.cdr.detectChanges();
+  }
+
+  private initscheduledGames() {
+    // Calculate the number of slots based on start/end and interval
+    const start = this.scheduleStart.getTime();
+    const end = this.scheduleEnd.getTime();
+    const intervalMs = this.scheduleInterval * 60 * 1000;
+    const numSlots = Math.max(1, Math.floor((end - start) / intervalMs) + 1);
+
+    // Create an array for each field with the correct number of slots
     this.scheduledGames = Array(this.fields)
       .fill(null)
-      .map(() => Array(allGames.length)
-        .fill(null));
-    this.cdr.detectChanges();
+      .map(() => Array.from({ length: numSlots }, (_, slotIdx) => {
+        const date = new Date(this.scheduleStart.getTime());
+        date.setMinutes(date.getMinutes() + slotIdx * this.scheduleInterval);
+        return new ScheduledGame({
+          startTime: date
+        });
+      })
+      );
   }
 
   flattenGames(): ScheduledGame[] {
@@ -255,7 +274,7 @@ export class ScheduleComponent implements OnInit {
    */
   assignAllGames() {
     // Clear all scheduled games
-    this.scheduledGames = this.scheduledGames.map(field => field.map(() => null));
+    this.initscheduledGames();
     const allGames = this.flattenGames();
     const numFields = this.fields;
     const numCategories = this.categories.length;

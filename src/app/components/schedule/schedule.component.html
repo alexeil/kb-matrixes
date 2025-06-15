@@ -12,60 +12,57 @@
         (cdkDropListDropped)="dropToUnassigned($event)">
         <h3>Unassigned Games</h3>
         @for (game of unassignedGames; track gameIdx; let gameIdx = $index) {
-            <div cdkDrag>
-                <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
-                    {{game?.categoryName}} - {{game?.teams?.join(' VS ')}}
-                </mat-card>
-            </div>
+        <div cdkDrag>
+            <mat-card style="margin-bottom: 8px; min-height: 48px; display: flex; align-items: center;">
+                {{game?.categoryName}} - {{game?.teams?.join(' VS ')}}
+            </mat-card>
+        </div>
         }
     </div>
 
     <!-- Schedule lists for each field -->
     <div class="fields-container">
         @for (field of scheduledGames; track fieldIdx; let fieldIdx = $index) {
-          <div class="scheduled-games-field">
-              <h3>Field {{ fieldIdx + 1 }}</h3>
-              @for (game of field; track idx; let idx = $index) {
-                  <div class="schedule-slot">
-                      <div cdkDropList [id]="'field-' + fieldIdx + '-slot-' + idx"
-                          [cdkDropListData]="{ fieldIdx: fieldIdx, slotIdx: idx }" [cdkDropListConnectedTo]="dropListIds"
-                          (cdkDropListDropped)="dropToSchedule($event)">
+        <div class="scheduled-games-field">
+            <h3>Field {{ fieldIdx + 1 }}</h3>
+            @for (game of field; track idx; let idx = $index) {
+            <div class="schedule-slot">
+                <div cdkDropList [id]="'field-' + fieldIdx + '-slot-' + idx"
+                    [cdkDropListData]="{ fieldIdx: fieldIdx, slotIdx: idx }" [cdkDropListConnectedTo]="dropListIds"
+                    (cdkDropListDropped)="dropToSchedule($event)">
 
-                          <div cdkDrag [cdkDragData]="{ game: game, slot: idx, field: fieldIdx }">
-                              <div class="scheduled-game-card">
-                                  @if (!game) {
-                                      <span class="game-empty">
-                                          {{ getTimeForIndex(idx) }} (Assign a game to this slot)
-                                      </span>
-                                  }
-                                  @if (game) {
-                                      <span class="game-info">
-                                          {{ getTimeForIndex(idx) }}   <br> {{ game.categoryName }}
-                                      </span>
-                                      <span class="game-info-teams">
-                                        {{ game.teams[0] }}<br>
-                                        {{ game.teams[1] }}<br>
-                                        {{ game.teams[2] }}<br>
-                                      </span>
-                                  }
+                    <div cdkDrag [cdkDragData]="{ game: game, slot: idx, field: fieldIdx }">
+                        <div class="scheduled-game-card">
+                            @if (game?.teams?.length === 0) {
+                            <span class="game-empty">
+                                {{ getTimeForIndex(idx) }} (Assign a game to this slot)
+                            </span>
+                            } @else {
+                            <span class="game-info">
+                                {{ getTimeForIndex(idx) }} <br> {{ game?.categoryName }}
+                            </span>
+                            <span class="game-info-teams">
+                                {{ game?.teams?.[0] }}<br>
+                                {{ game?.teams?.[1] }}<br>
+                                {{ game?.teams?.[2] }}<br>
+                            </span>
 
-                                  <!-- Game info on the left -->
-
-
-
-                                  <!-- Referee fields on the right -->
-                                  <div *ngIf="game" class="referee-fields">
-                                      <input type="text" [(ngModel)]="game.referees[0]" placeholder="Head referee"
-                                          class="referee-input" />
-                                      <input type="text" [(ngModel)]="game.referees[1]" placeholder="Assistant referee"
-                                          class="referee-input" />
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                }
+                            <!-- Referee fields on the right -->
+                            @if (game && game.referees) {
+                            <div class="referee-fields">
+                                <input type="text" [(ngModel)]="game.referees[0]" placeholder="Head referee"
+                                    class="referee-input" />
+                                <input type="text" [(ngModel)]="game.referees[1]" placeholder="Assistant referee"
+                                    class="referee-input" />
+                            </div>
+                            }
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
-          }
+            }
+        </div>
+        }
     </div>
 </div>

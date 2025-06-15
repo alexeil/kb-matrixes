@@ -1,8 +1,13 @@
 export class ScheduledGame {
-  categoryName!: string;
-  teams!: string[];
+  startTime!: Date;
   originalCategoryIndex!: number;
   originalGameIndex!: number;
+  categoryName!: string;
+
+  teams: string[] = [];
   referees: [string, string] = ['', ''];
-  startTime!: Date ;
+
+  constructor(init?: Partial<ScheduledGame>) {
+    Object.assign(this, init);
+  }
 }

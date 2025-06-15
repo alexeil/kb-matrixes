@@ -29,6 +29,14 @@
     <mat-timepicker #startTimePicker></mat-timepicker>
   </mat-form-field>
 
+    <mat-form-field appearance="outline">
+    <mat-label>End Time</mat-label>
+    <input matInput [matTimepicker]="endTimePicker" [ngModel]="scheduleConfig.scheduleEnd"
+      (ngModelChange)="scheduleConfig.setScheduleEnd($event)" placeholder="Select time" />
+    <mat-timepicker-toggle matSuffix [for]="endTimePicker"></mat-timepicker-toggle>
+    <mat-timepicker #endTimePicker></mat-timepicker>
+  </mat-form-field>
+
   <mat-form-field appearance="outline">
     <mat-label>Duration between games (minutes)</mat-label>
     <input matInput type="number" [ngModel]="scheduleConfig.scheduleInterval"
