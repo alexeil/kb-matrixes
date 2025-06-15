@@ -35,12 +35,12 @@
                               <div class="scheduled-game-card">
                                   @if (!game) {
                                       <span class="game-empty">
-                                          {{ getTimeForIndex() }} (Assign a game to this slot)
+                                          {{ getTimeForIndex(idx) }} (Assign a game to this slot)
                                       </span>
                                   }
                                   @if (game) {
                                       <span class="game-info">
-                                          {{ getTimeForIndex() }}   <br> {{ game.categoryName }}
+                                          {{ getTimeForIndex(idx) }}   <br> {{ game.categoryName }}
                                       </span>
                                       <span class="game-info-teams">
                                         {{ game.teams[0] }}<br>

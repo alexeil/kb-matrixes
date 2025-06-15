@@ -4,4 +4,5 @@ export class ScheduledGame {
   originalCategoryIndex!: number;
   originalGameIndex!: number;
   referees: [string, string] = ['', ''];
+  startTime!: Date ;
 }

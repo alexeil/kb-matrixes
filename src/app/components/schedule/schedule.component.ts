@@ -105,22 +105,29 @@ export class ScheduleComponent implements OnInit {
     const games: ScheduledGame[] = [];
     this.categories.forEach((cat, catIdx) => {
       (cat.displayMatrix || []).forEach((row, gameIdx) => {
+        // Calculate start time for each game
+        const date = new Date(this.scheduleStart.getTime());
+        date.setMinutes(date.getMinutes() + gameIdx * this.scheduleInterval);
         games.push({
           categoryName: cat.name,
           teams: [String(row[1]), String(row[2]), String(row[3])],
           originalCategoryIndex: catIdx,
           originalGameIndex: gameIdx,
-          referees: ['', '']
+          referees: ['', ''],
+          startTime: date
         });
       });
     });
     return games;
   }
 
-  getTimeForIndex(): string {
-    const hours = this.scheduleStart.getHours();
-    const minutes = this.scheduleStart.getMinutes();
-
+  getTimeForIndex(idx: number): string {
+    // Clone the start date to avoid mutating the original
+    const date = new Date(this.scheduleStart.getTime());
+    // Add interval minutes for each slot
+    date.setMinutes(date.getMinutes() + idx * this.scheduleInterval);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   }
 
@@ -291,6 +298,12 @@ export class ScheduleComponent implements OnInit {
     // Assign to scheduledGames and clear unassignedGames
     for (let fieldIdx = 0; fieldIdx < numFields; fieldIdx++) {
       for (let slotIdx = 0; slotIdx < fieldAssignments[fieldIdx].length; slotIdx++) {
+        // Set startTime for each game based on its slot
+        if (fieldAssignments[fieldIdx][slotIdx]) {
+          const date = new Date(this.scheduleStart.getTime());
+          date.setMinutes(date.getMinutes() + slotIdx * this.scheduleInterval);
+          fieldAssignments[fieldIdx][slotIdx].startTime = date;
+        }
         this.scheduledGames[fieldIdx][slotIdx] = fieldAssignments[fieldIdx][slotIdx];
       }
     }

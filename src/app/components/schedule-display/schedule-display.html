@@ -24,7 +24,7 @@
                         @for (match of games; track idx; let idx = $index) {
 
                         @if (match ) {
-                        <div class="grid-cell"> {{ match?.originalGameIndex }}</div>
+                        <div class="grid-cell">{{ match.startTime | date:'HH:mm' }}</div>
                         <div class="grid-cell">{{ match?.categoryName }}</div>
                         <div class="grid-cell">{{ match?.teams?.[0] }}</div>
                         <div class="grid-cell">{{ match?.teams?.[1] }}</div>
