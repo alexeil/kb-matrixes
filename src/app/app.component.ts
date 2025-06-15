@@ -25,6 +25,7 @@ import { RankingComponent } from './components/ranking/ranking.component';
 import { ScheduleComponent } from './components/schedule/schedule.component';
 import { Observable } from 'rxjs';
 import { ScheduledGame } from './models/scheduled-game';
+import { ScheduleDisplay } from './components/schedule-display/schedule-display';
 
 @Component({
   selector: 'app-root',
@@ -49,7 +50,8 @@ import { ScheduledGame } from './models/scheduled-game';
     MatrixComponent,
     GameSheetComponent,
     RankingComponent,
-    ScheduleComponent
+    ScheduleComponent,
+    ScheduleDisplay
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']

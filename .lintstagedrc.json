@@ -1,5 +1,8 @@
 {
-  "src/**/*.{ts,js,scss,html}": [
+  "src/**/*.{ts,js,html}": [
     "eslint --max-warnings=0"
+  ],
+  "src/**/*.scss": [
+    "stylelint"
   ]
 }

@@ -1,0 +1,44 @@
+<div *ngIf="games">
+    <mat-accordion>
+        <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <h2> Field #{{ fieldNumber }} - Schedule</h2>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <button mat-raised-button color="accent" (click)="printGameSheets()">Print to PDF</button>
+
+            <div #gameSheets class="game-sheets-container">
+                <div class="game-sheet-container">
+
+                    <div class="table-grid" #rankingTable>
+                        <div class="grid-header">Time </div>
+                        <div class="grid-header">Category </div>
+                        <div class="grid-header">Blue </div>
+                        <div class="grid-header">Gray </div>
+                        <div class="grid-header">Black </div>
+                        <div class="grid-header">Head Referee </div>
+                        <div class="grid-header">Assistant Referee </div>
+
+                        @for (match of games; track idx; let idx = $index) {
+
+                        @if (match ) {
+                        <div class="grid-cell"> {{ match?.originalGameIndex }}</div>
+                        <div class="grid-cell">{{ match?.categoryName }}</div>
+                        <div class="grid-cell">{{ match?.teams?.[0] }}</div>
+                        <div class="grid-cell">{{ match?.teams?.[1] }}</div>
+                        <div class="grid-cell">{{ match?.teams?.[2] }}</div>
+                        <div class="grid-cell">{{ match?.referees?.[0] }}</div>
+                        <div class="grid-cell">{{ match?.referees?.[1] }}</div>
+                        } @else {
+                        <div class="grid-cell"> {{ match }}</div>
+                        <div class="grid-cell" [style.grid-column-end]="'span 6'"></div>
+                        }
+                        }
+                    </div>
+                </div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+</div>

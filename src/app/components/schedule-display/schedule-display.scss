@@ -1,37 +1,25 @@
-.game-sheet-container {
-    margin: 10px;
-    width: fit-content;
-}
-
-.game-sheet-grid {
+.table-grid {
     display: grid;
-    margin-bottom: 2em;
+    grid-template-columns: 10% 15% 20% 20% 20% 10% 10%;
+    max-width: 1060px;
 }
 
 .grid-header {
     font-weight: bold;
     text-align: center;
     padding: 0.5em;
-    border: 1px solid rgb(0, 0, 0 / 12%);
+    border: 1px solid #ccc;
     display: flex; /* Use flexbox for vertical alignment */
     align-items: center; /* Vertically center the content */
     justify-content: center; /* Keep horizontal center */
 }
 
-.set-header {
-    grid-row: 2;
-}
-
 .grid-cell {
     padding: 0.5em;
     text-align: center;
-    border: 1px solid rgb(0, 0, 0 / 12%);
+    border: 1px solid #ccc;
 }
 
-.team-color {
-    font-weight: bold;
-}
-
-.team-name {
-    text-align: left;
+.print-button {
+    margin-bottom: 10px;
 }

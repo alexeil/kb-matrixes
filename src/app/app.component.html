@@ -99,6 +99,13 @@
       }
     </ng-container>
 
-    <app-game-sheet [catIndex]="1"></app-game-sheet>
+        <ng-container *ngIf="scheduledGames$ | async as scheduledGames">
+      @for (field of scheduledGames; track fieldIdx; let fieldIdx = $index) {
+      <div class="app-game-sheet-container">
+        <app-schedule-display [catIndex]="1" [fieldNumber]="fieldIdx + 1" [games]="field"
+          [numberOfSets]="scheduleConfig.numberOfSets"></app-schedule-display>
+      </div>
+      }
+    </ng-container>
   </mat-tab>
 </mat-tab-group>
