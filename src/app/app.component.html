@@ -1,64 +1,11 @@
 <app-header [isDarkTheme]="isDarkTheme" (themeToggle)="toggleTheme()"></app-header>
 
-<div style="display: flex; justify-content: space-between; align-items: center;">
-  <h2>Tournament details</h2>
-</div>
-
-<div style="display: flex; align-items: center; gap: 24px;">
-  <mat-form-field appearance="outline">
-    <mat-label>Location</mat-label>
-    <input matInput type="text" [ngModel]="scheduleConfig.location" (ngModelChange)="scheduleConfig.setLocation($event)"
-      placeholder="Enter city name" />
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Date</mat-label>
-    <input matInput [matDatepicker]="picker" [ngModel]="scheduleConfig.scheduleDate"
-      (ngModelChange)="scheduleConfig.setScheduleDate($event)" placeholder="Select date" />
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Start Time</mat-label>
-    <input matInput [matTimepicker]="startTimePicker" [ngModel]="scheduleConfig.scheduleStart"
-      (ngModelChange)="scheduleConfig.setScheduleStart($event)" placeholder="Select time" />
-    <mat-timepicker-toggle matSuffix [for]="startTimePicker"></mat-timepicker-toggle>
-    <mat-timepicker #startTimePicker></mat-timepicker>
-  </mat-form-field>
-
-    <mat-form-field appearance="outline">
-    <mat-label>End Time</mat-label>
-    <input matInput [matTimepicker]="endTimePicker" [ngModel]="scheduleConfig.scheduleEnd"
-      (ngModelChange)="scheduleConfig.setScheduleEnd($event)" placeholder="Select time" />
-    <mat-timepicker-toggle matSuffix [for]="endTimePicker"></mat-timepicker-toggle>
-    <mat-timepicker #endTimePicker></mat-timepicker>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Duration between games (minutes)</mat-label>
-    <input matInput type="number" [ngModel]="scheduleConfig.scheduleInterval"
-      (ngModelChange)="scheduleConfig.setScheduleInterval($event)" min="1" />
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Number of fields</mat-label>
-    <input matInput type="number" [ngModel]="scheduleConfig.fields" (ngModelChange)="scheduleConfig.setFields($event)"
-      min="1" />
-  </mat-form-field>
-
-  <mat-form-field appearance="outline">
-    <mat-label>Number of Sets</mat-label>
-    <input matInput type="number" [ngModel]="scheduleConfig.numberOfSets"
-      (ngModelChange)="scheduleConfig.setNumberOfSets($event)" min="1" placeholder="e.g. 3" />
-  </mat-form-field>
-</div>
+<app-tournament-details></app-tournament-details>
 
 <button mat-raised-button color="primary" (click)="addCategory()">Add Category</button>
-
 <button mat-raised-button color="accent" (click)="setTestData()">Set Test Data</button>
-
 <button mat-raised-button color="primary" (click)="copyShareUrl()">Share Setup</button>
+
 
 <mat-tab-group [(selectedIndex)]="mainTabIndex">
   <!-- Teams/Matrix/Game Sheets Tab -->

@@ -27,6 +27,7 @@ import { Observable } from 'rxjs';
 import { ScheduledGame } from './models/scheduled-game';
 import { ScheduleDisplay } from './components/schedule-display/schedule-display';
 import { HeaderComponent } from './components/header/header.component';
+import { TournamentDetailsComponent } from './components/tournament-details/tournament-details.component';
 
 @Component({
   selector: 'app-root',
@@ -53,7 +54,8 @@ import { HeaderComponent } from './components/header/header.component';
     RankingComponent,
     ScheduleComponent,
     ScheduleDisplay,
-    HeaderComponent
+    HeaderComponent,
+    TournamentDetailsComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
