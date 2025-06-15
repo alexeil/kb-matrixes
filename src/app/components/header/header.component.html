@@ -1,7 +1,7 @@
 <div class="app-header">
   <div class="header-spacer"></div>
   <h1 class="header-title">Tournament Generator</h1>
-  <button mat-icon-button class="theme-toggle-btn" (click)="themeToggle.emit()" [attr.aria-label]="isDarkTheme ? 'Switch to light mode' : 'Switch to dark mode'">
+  <button mat-icon-button class="theme-toggle-btn" (click)="toggleTheme()" [attr.aria-label]="isDarkTheme ? 'Switch to light mode' : 'Switch to dark mode'">
     <mat-icon [ngClass]="isDarkTheme ? 'moon-icon' : 'sun-icon'">
       {{ isDarkTheme ? 'dark_mode' : 'light_mode' }}
     </mat-icon>

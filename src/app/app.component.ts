@@ -71,8 +71,6 @@ export class AppComponent implements OnInit {
 
   scheduledGames$!: Observable<(ScheduledGame | null)[][]>;
 
-  isDarkTheme = false;
-
   catState = inject(CategoryStateService);
   scheduleState = inject(ScheduleStateService);
   scheduleConfig = inject(ScheduleConfigService);
@@ -246,16 +244,6 @@ export class AppComponent implements OnInit {
       this.selectedCategoryIndex = 0;
     } catch {
       alert('Failed to import setup.');
-    }
-  }
-
-  toggleTheme() {
-    this.isDarkTheme = !this.isDarkTheme;
-    const body = document.documentElement;
-    if (this.isDarkTheme) {
-      body.classList.add('dark-theme');
-    } else {
-      body.classList.remove('dark-theme');
     }
   }
 }
