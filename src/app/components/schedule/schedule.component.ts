@@ -60,11 +60,10 @@ export class ScheduleComponent implements OnInit {
       this.scheduleState.unassignedGames$
 
     ]).subscribe(([scheduleStart, scheduleInter, fields, categories, scheduledGames, unassignedGames]) => {
-      this.scheduleStart = scheduleStart;
-      this.scheduleInterval = scheduleInter;
-
       if (!this.initialized) {
         console.log('Initializing schedule component with fields:', fields, 'and categories:', categories.length);
+        this.scheduleStart = scheduleStart;
+        this.scheduleInterval = scheduleInter;
         this.categories = categories;
         this.fields = fields;
         this.initSchedule();
@@ -78,6 +77,15 @@ export class ScheduleComponent implements OnInit {
           this.categories = categories;
           this.fields = fields;
           this.initSchedule();
+        }
+
+        console.log('Updating schedule with new start time and interval:', this.scheduleStart, this.scheduleInterval, scheduleStart, scheduleInter);
+
+        if (this.scheduleStart != scheduleStart || this.scheduleInterval != scheduleInter) {
+          this.scheduleStart = scheduleStart;
+          this.scheduleInterval = scheduleInter;
+          console.log('updateAllGameStartTimes', this.scheduleStart, this.scheduleInterval);
+          this.updateAllGameStartTimes();
         }
       }
     });
@@ -311,5 +319,44 @@ export class ScheduleComponent implements OnInit {
     this.cdr.detectChanges();
     this.scheduleState.setScheduledGames(this.scheduledGames);
     this.scheduleState.setUnassignedGames(this.unassignedGames);
+  }
+
+  /**
+   * Call this method when the start time picker changes.
+   * It will update all ScheduledGame.startTime values in both scheduledGames and unassignedGames.
+   */
+  updateAllGameStartTimes() {
+    // Update scheduled games
+    for (const field of this.scheduledGames) {
+      let slotIdx = 0;
+      for (const game of field) {
+        if (game) {
+          const date = new Date(this.scheduleStart.getTime());
+          date.setMinutes(date.getMinutes() + slotIdx * this.scheduleInterval);
+          game.startTime = date;
+        }
+        slotIdx++;
+      }
+    }
+    // Update unassigned games (assign times after all scheduled slots)
+    let unassignedStartIdx = 0;
+    for (const field of this.scheduledGames) {
+      if (field.length > unassignedStartIdx) {
+        unassignedStartIdx = field.length;
+      }
+    }
+    let i = 0;
+    for (const game of this.unassignedGames) {
+      const date = new Date(this.scheduleStart.getTime());
+      date.setMinutes(date.getMinutes() + (unassignedStartIdx + i) * this.scheduleInterval);
+      game.startTime = date;
+      i++;
+    }
+    // Update state
+    this.scheduledGames = [...this.scheduledGames];
+    this.unassignedGames = [...this.unassignedGames];
+    this.scheduleState.setScheduledGames(this.scheduledGames);
+    this.scheduleState.setUnassignedGames(this.unassignedGames);
+    this.cdr.detectChanges();
   }
 }
