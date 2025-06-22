@@ -28,6 +28,7 @@ import { ScheduledGame } from './models/scheduled-game';
 import { ScheduleDisplay } from './components/schedule-display/schedule-display';
 import { HeaderComponent } from './components/header/header.component';
 import { TournamentDetailsComponent } from './components/tournament-details/tournament-details.component';
+import { atobUnicode } from './utils/url-utils';
 
 @Component({
   selector: 'app-root',
@@ -96,7 +97,7 @@ export class AppComponent implements OnInit {
     const share = params.get('share');
     if (share) {
       try {
-        const decoded = this.atobUnicode(share);
+        const decoded = atobUnicode(share);
         const state = JSON.parse(decoded);
 
         console.log('Loading setup from shared URL:', state);
@@ -139,77 +140,14 @@ export class AppComponent implements OnInit {
 
   addCategory() {
     this.catState.addCategory();
-    //this.selectedCategoryIndex = this.categories.length; // Will be corrected by subscription
   }
 
   removeCategory(index: number) {
     this.catState.removeCategory(index);
-    // selectedCategoryIndex will be corrected by subscription
   }
 
   trackByCategoryId(index: number, cat: Category) {
     return cat.id;
-  }
-
-  setTestData() {
-    const categories: Category[] = [
-      {
-        id: Date.now() + Math.random(),
-        name: 'Category A',
-        teams: ['Pardubice', 'Hradec Králové', 'Brno', 'Praha', 'Plzeň'],
-        numberOfFields: 1,
-        displayMatrix: []
-      },
-      {
-        id: Date.now() + Math.random(),
-        name: 'Category B',
-        teams: ['Olomouc', 'Liberec', 'Ostrava', 'Zlín', 'Jihlava', 'Karlovy Vary'],
-        numberOfFields: 1,
-        displayMatrix: []
-      }
-    ];
-    this.catState.setCategories(categories);
-    this.selectedCategoryIndex = 0;
-  }
-
-  // Helper functions for Unicode-safe base64
-  btoaUnicode(str: string) {
-    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
-      String.fromCharCode(parseInt(p1, 16))
-    ));
-  }
-  atobUnicode(str: string) {
-    return decodeURIComponent(Array.prototype.map.call(atob(str), (c: string) =>
-      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-    ).join(''));
-  }
-
-  copyShareUrl() {
-    const state = {
-      categories: this.categories,
-      scheduleStart: this.scheduleConfig.scheduleStart,
-      scheduleEnd: this.scheduleConfig.scheduleEnd,
-      scheduleInterval: this.scheduleConfig.scheduleInterval,
-      scheduleFields: this.scheduleConfig.fields,
-      tournamentLocation: this.tournamentLocation,
-      // Add schedule state
-      scheduledGames: this.scheduleState.scheduledGames,
-      unassignedGames: this.scheduleState.unassignedGames
-    };
-    const json = JSON.stringify(state);
-
-    console.log('Creating shareable URL with state:', state);
-    const encoded = this.btoaUnicode(json);
-    const url = `${window.location.origin}${window.location.pathname}?share=${encoded}`;
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url);
-        console.log('Shareable URL copied to clipboard!');
-      }
-    } catch (e) {
-      // Gracefully handle clipboard errors
-      console.error('Clipboard error:', e);
-    }
   }
 
   onCategoryChange(index: number) {
@@ -232,18 +170,5 @@ export class AppComponent implements OnInit {
 
   onTabChange(event: { index: number }) {
     this.selectedCategoryIndex = event.index;
-  }
-
-  importFromUrl() {
-    const encoded = window.prompt('Paste the base64-encoded setup:');
-    if (!encoded) return;
-    try {
-      const decoded = this.atobUnicode(encoded);
-      const categories = JSON.parse(decoded);
-      this.catState.setCategories(categories);
-      this.selectedCategoryIndex = 0;
-    } catch {
-      alert('Failed to import setup.');
-    }
   }
 }

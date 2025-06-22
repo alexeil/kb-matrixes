@@ -16,3 +16,11 @@ html.dark-theme {
             density: 0,
             dark: true));
 }
+
+:root {
+    --delete-btn-color: #e53935;
+}
+
+.dark-theme {
+    --delete-btn-color: #ff8a80;
+}

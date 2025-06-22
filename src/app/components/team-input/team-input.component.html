@@ -1,29 +1,30 @@
-<h2>Select teams</h2>
+<div class="team-input-container">
+  <h2>Select teams</h2>
 
-<form (submit)="addTeam(); $event.preventDefault()">
-  <mat-form-field appearance="outline">
-    <mat-label>Enter team name</mat-label>
-    <input matInput [(ngModel)]="teamName" name="teamName" autocomplete="off" />
-  </mat-form-field>
-  <button mat-raised-button color="primary" type="submit" [disabled]="!teamName.trim()">
-    Add Team
-  </button>
-</form>
+  <form (submit)="addTeam(); $event.preventDefault()">
+    <mat-form-field appearance="outline">
+      <mat-label>Enter team name</mat-label>
+      <input matInput [(ngModel)]="teamName" name="teamName" autocomplete="off" />
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!teamName.trim()">
+      Add Team
+    </button>
+  </form>
 
-@if (teams.length) {
+  @if (teams.length) {
   <mat-list>
     @for (team of teams; track team; let i = $index) {
-      <mat-list-item>
-        <span mat-line>{{ i + 1 }}. {{ team }}</span>
-        <button mat-icon-button color="warn" (click)="removeTeam(i)" aria-label="Remove team">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-list-item>
+    <mat-list-item>
+      <span mat-line>{{ i + 1 }}. {{ team }}</span>
+      <button mat-icon-button color="warn" (click)="removeTeam(i)" aria-label="Remove team">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-list-item>
     }
   </mat-list>
-}
+  }
 
-<button mat-raised-button color="accent" (click)="shuffleTeams()" [disabled]="teams.length < 2">
-  Shuffle Teams
-</button>
-
+  <button style="margin: 10px 0px 15px 0px;" mat-raised-button color="accent" (click)="shuffleTeams()" [disabled]="teams.length < 2">
+    Shuffle Teams
+  </button>
+</div>

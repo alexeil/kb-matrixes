@@ -1,11 +1,47 @@
-.team-matrix-grid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 32px;
-    align-items: start;
+.header-container {
+    padding: 10px;
 }
 
-.app-ranking-container,
-.app-game-sheet-container {
-    margin-top: 20px;
+.app-tournament-details-container {
+    padding: 0 10px 10px;
+}
+
+.tournament-modules-container {
+    margin: 0 10px;
+    border-radius: 18px;
+    border: 1.5px solid #d1d5db;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 6%);
+    min-height: 500px;
+
+    .add-category-button-container {
+        padding: 15px 0 5px 20px;
+    }
+
+    .category-name-input {
+        width: 100px;
+        border: none;
+        background: transparent;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .delete-btn {
+        color: var(--delete-btn-color);
+        border: none;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .team-matrix-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 20px;
+        align-items: start;
+        padding: 0 20px;
+    }
+
+    .app-ranking-container,
+    .app-game-sheet-container {
+        margin-top: 20px;
+    }
 }

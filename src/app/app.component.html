@@ -1,64 +1,68 @@
-<app-header></app-header>
+<div class="header-container">
+  <app-header></app-header>
+</div>
 
-<app-tournament-details></app-tournament-details>
+<div class="app-tournament-details-container">
+  <app-tournament-details></app-tournament-details>
+</div>
 
-<button mat-flat-button (click)="addCategory()">Add Category</button>
-<button mat-flat-button (click)="setTestData()">Set Test Data</button>
-<button mat-flat-button (click)="copyShareUrl()">Share Setup</button>
+<div class="tournament-modules-container">
 
+  <div class="add-category-button-container">
+    <button mat-flat-button (click)="addCategory()">Add Category</button>
+  </div>
 
-<mat-tab-group [(selectedIndex)]="mainTabIndex">
-  <!-- Teams/Matrix/Game Sheets Tab -->
-  <mat-tab label="Register Teams & select Matrix">
-    <mat-tab-group [(selectedIndex)]="selectedCategoryIndex">
+  <mat-tab-group [(selectedIndex)]="mainTabIndex">
+    <!-- Teams/Matrix/Game Sheets Tab -->
+    <mat-tab label="Step 1 - Register Teams & select Matrix">
+      <mat-tab-group [(selectedIndex)]="selectedCategoryIndex">
+        @for (cat of categories; track i; let i = $index) {
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <input [(ngModel)]="cat.name" class="category-name-input"/>
+            <button extended (click)="removeCategory(i)"  class="delete-btn">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </ng-template>
+          <br /><br /><br />
+          <div class="team-matrix-grid">
+            <app-team-input [teams]="cat.teams" [catIndex]="i"></app-team-input>
+            <app-matrix [teams]="cat.teams" [catIndex]="i"></app-matrix>
+          </div>
+        </mat-tab>
+        }
+      </mat-tab-group>
+    </mat-tab>
+
+    <!-- Schedule Tab -->
+    <mat-tab label="Step 2 - Create the Schedule">
+      <app-schedule></app-schedule>
+    </mat-tab>
+
+    <mat-tab label="Step 3 - Let's print it!">
       @for (cat of categories; track i; let i = $index) {
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <input [(ngModel)]="cat.name"
-            style="width: 100px; border: none; background: transparent; font-weight: bold;" />
-          <button extended (click)="removeCategory(i)"
-            style="border: none; background: transparent; cursor: pointer; color: red;">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </ng-template>
-        <br /><br /><br />
-        <div class="team-matrix-grid">
-          <app-team-input [teams]="cat.teams" [catIndex]="i"></app-team-input>
-          <app-matrix [teams]="cat.teams" [catIndex]="i"></app-matrix>
+      <div class="app-ranking-container">
+        <app-ranking [catIndex]="i"></app-ranking>
+      </div>
+      }
+
+      <ng-container *ngIf="scheduledGames$ | async as scheduledGames">
+        @for (field of scheduledGames; track fieldIdx; let fieldIdx = $index) {
+        <div class="app-game-sheet-container">
+          <app-game-sheet [catIndex]="1" [fieldNumber]="fieldIdx + 1" [games]="field"
+            [numberOfSets]="scheduleConfig.numberOfSets"></app-game-sheet>
         </div>
-      </mat-tab>
-      }
-    </mat-tab-group>
-  </mat-tab>
+        }
+      </ng-container>
 
-  <!-- Schedule Tab -->
-  <mat-tab label="Create the Schedule">
-    <app-schedule></app-schedule>
-  </mat-tab>
-
-  <mat-tab label="Let's print it!">
-    @for (cat of categories; track i; let i = $index) {
-    <div class="app-ranking-container">
-      <app-ranking [catIndex]="i"></app-ranking>
-    </div>
-    }
-
-    <ng-container *ngIf="scheduledGames$ | async as scheduledGames">
-      @for (field of scheduledGames; track fieldIdx; let fieldIdx = $index) {
-      <div class="app-game-sheet-container">
-        <app-game-sheet [catIndex]="1" [fieldNumber]="fieldIdx + 1" [games]="field"
-          [numberOfSets]="scheduleConfig.numberOfSets"></app-game-sheet>
-      </div>
-      }
-    </ng-container>
-
-        <ng-container *ngIf="scheduledGames$ | async as scheduledGames">
-      @for (field of scheduledGames; track fieldIdx; let fieldIdx = $index) {
-      <div class="app-game-sheet-container">
-        <app-schedule-display [catIndex]="1" [fieldNumber]="fieldIdx + 1" [games]="field"
-          [numberOfSets]="scheduleConfig.numberOfSets"></app-schedule-display>
-      </div>
-      }
-    </ng-container>
-  </mat-tab>
-</mat-tab-group>
+      <ng-container *ngIf="scheduledGames$ | async as scheduledGames">
+        @for (field of scheduledGames; track fieldIdx; let fieldIdx = $index) {
+        <div class="app-game-sheet-container">
+          <app-schedule-display [catIndex]="1" [fieldNumber]="fieldIdx + 1" [games]="field"
+            [numberOfSets]="scheduleConfig.numberOfSets"></app-schedule-display>
+        </div>
+        }
+      </ng-container>
+    </mat-tab>
+  </mat-tab-group>
+</div>
